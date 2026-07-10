@@ -5,6 +5,7 @@ Geleral analysis tools for VASP molecular dynamics simulations.
 ## Features
 
 - [X] MD profile data class
-- [ ] Reading REPORT file (Special case: purely harmonic simulation)
+- [X] Reading REPORT file (Special case: purely harmonic simulation)
 - [ ] Reading REPORT file (General case)
+- [X] Reading INCAR file (Only POTIM tag!!)
 - [ ] ... else what?
