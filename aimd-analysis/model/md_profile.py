@@ -29,6 +29,8 @@ class MDProfile:
     # 다른 유도 properties(추출하는 것들로부터 계산되는 것들)는 여기.
     @property
     def nsteps(self):
+        if self.step is None:
+            return 0
         return len(self.step)
     
     @property
@@ -41,7 +43,7 @@ class MDProfile:
     def duration(self):
         if self.dt is None:
             return None
-        return self.nsteps * self.dt
+        return self.step[-1] * self.dt
     
     @property
     def has_pressure(self): # NPT인지를 판가름할 때 편할 듯.
