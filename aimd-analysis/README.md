@@ -1,3 +1,3 @@
 # AIMD Analysis
 
-Python implementation of analysis tools for VASP AIMD simulations.
+Geleral analysis tools for VASP molecular dynamics simulations.
