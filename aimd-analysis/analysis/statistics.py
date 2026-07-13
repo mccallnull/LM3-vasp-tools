@@ -102,14 +102,14 @@ def block_average(
         Etot=_block_average_array(profile.Etot, block_size),
         T_md=_block_average_array(profile.T_md, block_size),
 
-        P_md=_block_average_array(profile.T_md, block_size),
-        V_md=_block_average_array(profile.T_md, block_size),
-        lat_a=_block_average_array(profile.T_md, block_size),
-        lat_b=_block_average_array(profile.T_md, block_size),
-        lat_c=_block_average_array(profile.T_md, block_size),
-        lat_alp=_block_average_array(profile.T_md, block_size),
-        lat_bet=_block_average_array(profile.T_md, block_size),
-        lat_gam=_block_average_array(profile.T_md, block_size),
+        P_md=_block_average_array(profile.P_md, block_size),
+        V_md=_block_average_array(profile.V_md, block_size),
+        lat_a=_block_average_array(profile.lat_a, block_size),
+        lat_b=_block_average_array(profile.lat_b, block_size),
+        lat_c=_block_average_array(profile.lat_c, block_size),
+        lat_alp=_block_average_array(profile.lat_alp, block_size),
+        lat_bet=_block_average_array(profile.lat_bet, block_size),
+        lat_gam=_block_average_array(profile.lat_gam, block_size),
 
         dt=profile.dt,
     )
@@ -119,6 +119,9 @@ def _block_average_array(arr, block_size):
 
     if arr is None:
         return None
+    
+    if block_size == 1:
+        return arr.copy()
 
     nblock = len(arr) // block_size
     arr = arr[: nblock * block_size]
