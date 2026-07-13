@@ -37,7 +37,7 @@ def _parse_report_line_pureHO(line: str, data: dict):
     #     data["V_md"].append(...)
 
 
-def read_report_pureHO(filename: Path, verbose=False) -> MDProfile:
+def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
 
     data = {
         "step": [],
