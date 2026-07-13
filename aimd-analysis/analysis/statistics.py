@@ -31,6 +31,12 @@ def summary(profile: MDProfile):
         print()
         _print_statistics("Pressure (kBar)", profile.P_md)
         _print_statistics("Volume (A^3)", profile.V_md)
+        _print_statistics("a (A)", profile.lat_a)
+        _print_statistics("b (A)", profile.lat_b)
+        _print_statistics("c (A)", profile.lat_c)
+        _print_statistics("alpha (deg.)", profile.lat_alp)
+        _print_statistics("beta (deg.)", profile.lat_bet)
+        _print_statistics("gamma (deg.)", profile.lat_gam)
 
     print("=" * 50)
 
@@ -41,3 +47,35 @@ def _print_statistics(title: str, data):
     print(f"    Mean : {np.mean(data):12.6f}")
     print(f"    Std  : {np.std(data):12.6f}")
     print()
+
+
+def trim(
+    profile: MDProfile,
+    start: int = 0,
+    stop: int | None = None,
+) -> MDProfile:
+
+    return MDProfile(
+        step=profile.step[start:stop],
+        Epot=profile.Epot[start:stop],
+        Ekin=profile.Ekin[start:stop],
+        Etot=profile.Etot[start:stop],
+        T_md=profile.T_md[start:stop],
+
+        P_md=_trim_optional(profile.P_md, start, stop),
+        V_md=_trim_optional(profile.V_md, start, stop),
+        lat_a=_trim_optional(profile.lat_a, start, stop),
+        lat_b=_trim_optional(profile.lat_b, start, stop),
+        lat_c=_trim_optional(profile.lat_c, start, stop),
+        lat_alp=_trim_optional(profile.lat_alp, start, stop),
+        lat_bet=_trim_optional(profile.lat_bet, start, stop),
+        lat_gam=_trim_optional(profile.lat_gam, start, stop),
+
+        dt=profile.dt,
+    )
+
+
+def _trim_optional(arr, start, stop):
+    if arr is None:
+        return None
+    return arr[start:stop]
