@@ -1,3 +1,18 @@
+import matplotlib.pyplot as plt
+
+import numpy as np
+
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+
+LABELS = {
+    "Epot": "Potential Energy (eV)",
+    "Ekin": "Kinetic Energy (eV)",
+    "Etot": "Total Energy (eV)",
+    "T_md": "Temperature (K)",
+}
+
+
 def plot_profile(
     profile,
     quantity,
@@ -15,15 +30,16 @@ def plot_profile(
     ax.set_xlabel("Elapsed Time (fs)")
     ax.set_ylabel(LABELS[quantity])
 
-    axins = inset_axes(...)
+    #axins = inset_axes(...)
 
-    axins.hist(y, bins=bins)
+    #axins.hist(y, bins=bins)
 
-    mean = np.mean(y)
-    std = np.std(y)
+    #mean = np.mean(y)
+    #std = np.std(y)
 
-    axins.text(...)
+    #axins.text(...)
 
     plt.tight_layout()
+    plt.show()
 
     return fig, ax
