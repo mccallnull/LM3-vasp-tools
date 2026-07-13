@@ -37,7 +37,7 @@ def _parse_report_line_pureHO(line: str, data: dict):
     #     data["V_md"].append(...)
 
 
-def read_report_pureHO(filename: Path) -> MDProfile:
+def read_report_pureHO(filename: Path, verbose=False) -> MDProfile:
 
     data = {
         "step": [],
@@ -49,6 +49,9 @@ def read_report_pureHO(filename: Path) -> MDProfile:
     with open(filename, "r") as f:
         for line in f:
             _parse_report_line_pureHO(line, data)
+
+    if verbose:
+        _print_loaded_data(data)
 
     _validate_data(data)
 
@@ -69,9 +72,6 @@ def _validate_data(data):
 
     n = len(data["step"])
 
-    for key, value in data.items():
-        print(f"{key:6s}: {len(value)}")
-
     if len(data["Epot"]) != n:
         raise ValueError("Different data length!!")
 
@@ -80,3 +80,9 @@ def _validate_data(data):
 
     if len(data["T_md"]) != n:
         raise ValueError("Different data length!!")
+
+
+def _print_loaded_data(data):
+
+    for key, value in data.items():
+        print(f"{key:6s}: {len(value)}")
