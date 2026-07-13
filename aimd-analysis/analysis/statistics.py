@@ -7,7 +7,7 @@ import numpy as np
 
 from ..model.md_profile import MDProfile
 
-
+# MDProfile 통계 요약 (raw MDProfile, sliced MDProfile 모두 가능.)
 def summary(profile: MDProfile):
 
     print("=" * 50)
@@ -49,6 +49,7 @@ def _print_statistics(title: str, data):
     print()
 
 
+# Slice하여 새로운 MDProfile 생성 (equilibration 자르기, block average 등에 사용)
 def slice_profile(
     profile: MDProfile,
     start: int = 0,
@@ -79,3 +80,47 @@ def _slice_optional(arr, start, stop):
     if arr is None:
         return None
     return arr[start:stop]
+
+
+# Block average: 시간은 block마다 시작과 끝의 평균값 이용
+def block_average(
+    profile: MDProfile,
+    block_size: int,
+) -> MDProfile:
+
+    if block_size < 1:
+        raise ValueError("block_size must be positive.")
+
+    if block_size > profile.nsteps:
+        raise ValueError("block_size is larger than the trajectory length.")
+
+    return MDProfile(
+
+        step=_block_average_array(profile.step, block_size),
+        Epot=_block_average_array(profile.Epot, block_size),
+        Ekin=_block_average_array(profile.Ekin, block_size),
+        Etot=_block_average_array(profile.Etot, block_size),
+        T_md=_block_average_array(profile.T_md, block_size),
+
+        P_md=_block_average_array(profile.T_md, block_size),
+        V_md=_block_average_array(profile.T_md, block_size),
+        lat_a=_block_average_array(profile.T_md, block_size),
+        lat_b=_block_average_array(profile.T_md, block_size),
+        lat_c=_block_average_array(profile.T_md, block_size),
+        lat_alp=_block_average_array(profile.T_md, block_size),
+        lat_bet=_block_average_array(profile.T_md, block_size),
+        lat_gam=_block_average_array(profile.T_md, block_size),
+
+        dt=profile.dt,
+    )
+
+
+def _block_average_array(arr, block_size):
+
+    if arr is None:
+        return None
+
+    nblock = len(arr) // block_size
+    arr = arr[: nblock * block_size]
+    arr = arr.reshape(nblock, block_size)
+    return np.mean(arr, axis=1)
