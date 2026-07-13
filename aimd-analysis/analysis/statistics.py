@@ -49,7 +49,7 @@ def _print_statistics(title: str, data):
     print()
 
 
-def trim(
+def slice_profile(
     profile: MDProfile,
     start: int = 0,
     stop: int | None = None,
@@ -62,20 +62,20 @@ def trim(
         Etot=profile.Etot[start:stop],
         T_md=profile.T_md[start:stop],
 
-        P_md=_trim_optional(profile.P_md, start, stop),
-        V_md=_trim_optional(profile.V_md, start, stop),
-        lat_a=_trim_optional(profile.lat_a, start, stop),
-        lat_b=_trim_optional(profile.lat_b, start, stop),
-        lat_c=_trim_optional(profile.lat_c, start, stop),
-        lat_alp=_trim_optional(profile.lat_alp, start, stop),
-        lat_bet=_trim_optional(profile.lat_bet, start, stop),
-        lat_gam=_trim_optional(profile.lat_gam, start, stop),
+        P_md=_slice_optional(profile.P_md, start, stop),
+        V_md=_slice_optional(profile.V_md, start, stop),
+        lat_a=_slice_optional(profile.lat_a, start, stop),
+        lat_b=_slice_optional(profile.lat_b, start, stop),
+        lat_c=_slice_optional(profile.lat_c, start, stop),
+        lat_alp=_slice_optional(profile.lat_alp, start, stop),
+        lat_bet=_slice_optional(profile.lat_bet, start, stop),
+        lat_gam=_slice_optional(profile.lat_gam, start, stop),
 
         dt=profile.dt,
     )
 
 
-def _trim_optional(arr, start, stop):
+def _slice_optional(arr, start, stop):
     if arr is None:
         return None
     return arr[start:stop]
