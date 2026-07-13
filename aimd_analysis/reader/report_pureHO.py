@@ -10,6 +10,7 @@ from ..model.md_profile import MDProfile
 def _parse_report_line_pureHO(line: str, data: dict):
     """Parse a single line of VASP REPORT."""
 
+    line = line.replace(">","")
     fields = line.split()
 
     if not fields:
@@ -45,7 +46,7 @@ def read_report_pureHO(filename: Path) -> MDProfile:
         "T_md": [],
     }
 
-    with filename.open("r") as f:
+    with open(filename, "r") as f:
         for line in f:
             _parse_report_line_pureHO(line, data)
 
@@ -67,6 +68,9 @@ def read_report_pureHO(filename: Path) -> MDProfile:
 def _validate_data(data):
 
     n = len(data["step"])
+
+    for key, value in data.items():
+        print(f"{key:6s}: {len(value)}")
 
     if len(data["Epot"]) != n:
         raise ValueError("Different data length!!")

@@ -8,24 +8,31 @@ Example:
     - Block-average MD trajectory
 """
 
-from io.report_pureHO import read_report_pureHO
-from io.incar import read_incar
+from aimd_analysis.reader.report_pureHO import read_report_pureHO
+from aimd_analysis.reader.incar import read_incar
 
-from analysis.statistics import (
+from aimd_analysis.analysis.statistics import (
     summary,
     slice_profile,
     block_average,
 )
 
+from pathlib import Path
+
+EXAMPLE_DIR = Path(__file__).resolve().parent
+TEST_DIR = EXAMPLE_DIR.parent / "tests"
+
+report_file = TEST_DIR / "REPORT"
+incar_file = TEST_DIR / "INCAR"
 
 # ==========================================================
 # Read REPORT / INCAR
 # ==========================================================
 
-profile = read_report_pureHO("../tests/REPORT")
+profile = read_report_pureHO(report_file)
 
-incar = read_incar("../tests/INCAR")
-profile.dt = incar.POTIM
+incar = read_incar(incar_file)
+profile.dt = incar.potim
 
 
 # ==========================================================
@@ -46,7 +53,7 @@ summary(profile)
 
 profile_sliced = slice_profile(
     profile,
-    start=10000,
+    start=20,
 )
 
 print()
@@ -63,7 +70,7 @@ summary(profile_sliced)
 
 profile_block = block_average(
     profile_sliced,
-    block_size=100,
+    block_size=10,
 )
 
 print()

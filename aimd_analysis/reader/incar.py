@@ -26,7 +26,7 @@ def read_incar(filename: Path) -> INCAR:
         "potim": None,
     }
 
-    with filename.open("r") as f:
+    with open(filename, "r") as f:
         for line in f:
             _parse_incar_line(line, data)
 

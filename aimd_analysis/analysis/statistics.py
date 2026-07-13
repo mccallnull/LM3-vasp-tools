@@ -4,6 +4,7 @@
 # (lattice constants는 아직 구현 안됨: XDATCAR reader 필요)
 
 import numpy as np
+from typing import Optional
 
 from ..model.md_profile import MDProfile
 
@@ -18,6 +19,10 @@ def summary(profile: MDProfile):
 
     if profile.dt is not None:
         print(f"Time step       : {profile.dt:.4f} fs")
+        print(f"Start time      : {profile.start_time:.4f} fs")
+        print(f"End time        : {profile.end_time:.4f} fs")
+        print(f"Start elap.time : {profile.elapsed_time[0]:.4f} fs")
+        print(f"End elap.time   : {profile.elapsed_time[-1]:.4f} fs")
         print(f"Duration        : {profile.duration:.4f} fs")
 
     print()
@@ -53,7 +58,7 @@ def _print_statistics(title: str, data):
 def slice_profile(
     profile: MDProfile,
     start: int = 0,
-    stop: int | None = None,
+    stop: Optional[int] = None,
 ) -> MDProfile:
 
     return MDProfile(

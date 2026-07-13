@@ -1,0 +1,38 @@
+RANDOM_SEED =         363336740                0                0
+
+############################# MD setting #####################################
+
+IBRION=0                                           # MD simulation
+POTIM= 0.05                                           # integration step - keep it small
+TEBEG=400                                          # simulation temperature
+MDALGO=3
+LANGEVIN_GAMMA = 1
+
+# activate QBT and set its parameter
+#LCNOISE = T 
+#CNOISEM = 20
+
+
+NSW=2000
+
+# harmonic system
+TILAMBDA=0.00
+
+##############################################################################
+
+#PREC=Accurate
+#EDIFF=1e-8
+PREC = LOW
+EDIFF = 1e-5
+ISYM=0
+LWAVE=.FALSE.
+LCHARG=.FALSE.
+NELMIN=4
+LREAL=.FALSE.
+#ALGO=VeryFast
+ISMEAR=-1
+SIGMA=0.1
+
+ML_LMLFF = T
+ML_MODE = run
+ML_OUTBLOCK = 20

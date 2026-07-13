@@ -37,13 +37,31 @@ class MDProfile:
     def time(self):
         if self.dt is None:
             return None
-        return self.step * self.dt
+        return (self.step - 1) * self.dt
+    
+    @property
+    def start_time(self):
+        if self.dt is None:
+            return None
+        return self.time[0]
+
+    @property
+    def end_time(self):
+        if self.dt is None:
+            return None
+        return self.time[-1]
 
     @property
     def duration(self):
         if self.dt is None:
             return None
-        return self.step[-1] * self.dt
+        return self.end_time - self.start_time
+    
+    @property
+    def elapsed_time(self):
+        if self.dt is None:
+            return None
+        return self.time - self.time[0]
     
     @property
     def has_pressure(self): # NPT인지를 판가름할 때 편할 듯.
