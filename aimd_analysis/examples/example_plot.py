@@ -25,7 +25,7 @@ profile.dt = incar.potim
 # Plot
 # ============================================================
 
-plot_profile(
+fig, ax = plot_profile(
     profile,
     quantity="Etot",
     color="tab:red",

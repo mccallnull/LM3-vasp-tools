@@ -38,3 +38,7 @@ fig.savefig(
     str(outfile),
     dpi=300,
 )
+
+print(f"Saved: {outfile}")
+
+plt.close(fig)
