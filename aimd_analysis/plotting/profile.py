@@ -1,16 +1,15 @@
 import matplotlib.pyplot as plt
-
 import numpy as np
-
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
+from .style import (
+    LABELS,
+    DEFAULT_FIGSIZE,
+    DEFAULT_LINEWIDTH,
+    DEFAULT_LINESTYLE,
+    DEFAULT_ALPHA,
+)
 
-LABELS = {
-    "Epot": "Potential Energy (eV)",
-    "Ekin": "Kinetic Energy (eV)",
-    "Etot": "Total Energy (eV)",
-    "T_md": "Temperature (K)",
-}
 
 # 한 개의 quantity를 시간에 따라 그림.
 def plot_profile(
@@ -19,13 +18,13 @@ def plot_profile(
 
     # Figure
     ax=None,
-    figsize=(6, 4),
+    figsize=DEFAULT_FIGSIZE,
 
     # Line style
     color=None,
-    linewidth=1.5,
-    linestyle="-",
-    alpha=1.0,
+    linewidth=DEFAULT_LINEWIDTH,
+    linestyle=DEFAULT_LINESTYLE,
+    alpha=DEFAULT_ALPHA,
     label=None,
 
     # Axis
