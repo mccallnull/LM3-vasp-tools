@@ -37,6 +37,12 @@ def plot_histogram(
     show_statistics=False,
 ):
 
+    if not profile.stats:
+        raise RuntimeError(
+            "Statistics have not been computed. "
+            "Call compute_statistics(profile) first."
+        )
+
     y = getattr(profile, quantity)
 
     if ax is None:
@@ -83,7 +89,7 @@ def plot_histogram(
             labelleft=False,
         )
 
-        show_statistis=False
+        show_statistics=False
 
     if show_statistics:
         stats = profile.stats[quantity]

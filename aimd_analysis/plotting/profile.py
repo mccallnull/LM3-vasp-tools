@@ -41,7 +41,7 @@ def plot_profile(
     show_statistics=False,
 ):
 
-    if show_statistics and not profile.stats:
+    if not profile.stats:
         raise RuntimeError(
             "Statistics have not been computed. "
             "Call compute_statistics(profile) first."
