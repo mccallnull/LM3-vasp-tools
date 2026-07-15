@@ -8,6 +8,10 @@ from .style import (
     DEFAULT_LINEWIDTH,
     DEFAULT_LINESTYLE,
     DEFAULT_ALPHA,
+    MEAN_LINESTYLE,
+    MEAN_LINEWIDTH,
+    MEAN_LINECOLOR,
+    MEAN_LINEALPHA,
 )
 
 from .histogram import plot_histogram
@@ -74,6 +78,16 @@ def plot_profile(
         label=label,
     )
 
+    stats = profile.stats[quantity]
+
+    ax.axhline(
+        stats.mean,
+        color=MEAN_LINECOLOR,
+        linestyle=MEAN_LINESTYLE,
+        linewidth=MEAN_LINEWIDTH,
+        alpha=MEAN_LINEALPHA,
+    )
+
     if grid:
         ax.grid(True)
 
@@ -98,8 +112,6 @@ def plot_profile(
         )
 
     if show_statistics:
-        stats = profile.stats[quantity]
-
         text = (
             f"Mean = {stats.mean:.6f}\n"
             f"Std  = {stats.std:.6f}"

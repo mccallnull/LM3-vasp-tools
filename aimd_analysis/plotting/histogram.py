@@ -4,6 +4,10 @@ from .style import (
     LABELS,
     DEFAULT_FIGSIZE,
     DEFAULT_ALPHA,
+    MEAN_LINESTYLE,
+    MEAN_LINEWIDTH,
+    MEAN_LINECOLOR,
+    MEAN_LINEALPHA,
 )
 
 
@@ -62,6 +66,16 @@ def plot_histogram(
         label=label,
     )
 
+    stats = profile.stats[quantity]
+
+    ax.axvline(
+        stats.mean,
+        color=MEAN_LINECOLOR,
+        linestyle=MEAN_LINESTYLE,
+        linewidth=MEAN_LINEWIDTH,
+        alpha=MEAN_LINEALPHA,
+    )
+
     if grid:
         ax.grid(True)
 
@@ -89,11 +103,7 @@ def plot_histogram(
             labelleft=False,
         )
 
-        show_statistics=False
-
     if show_statistics:
-        stats = profile.stats[quantity]
-
         text = (
             f"Mean = {stats.mean:.6f}\n"
             f"Std  = {stats.std:.6f}"
