@@ -12,6 +12,11 @@ from .style import (
     MEAN_LINEWIDTH,
     MEAN_LINECOLOR,
     MEAN_LINEALPHA,
+    TEXTBOX_FONTSIZE,
+    TEXTBOX_ALPHA,
+    TEXTBOX_PAD,
+    TEXTBOX_EDGECOLOR,
+    TEXTBOX_FACECOLOR,
 )
 
 from .histogram import plot_histogram
@@ -113,13 +118,13 @@ def plot_profile(
 
     if show_statistics:
         text = (
-            f"Mean = {stats.mean:.6f}\n"
-            f"Std  = {stats.std:.6f}"
+            f"{'Mean':<5}: {stats.mean:10.6f}\n"
+            f"{'Std':<5}: {stats.std:10.6f}"
         )
 
         ax.text(
-            0.02,
-            0.98,
+            0.03,
+            0.95,
             text,
 
             transform=ax.transAxes,
@@ -128,10 +133,13 @@ def plot_profile(
             va="top",
 
             bbox = dict(
-                facecolor="white",
-                edgecolor="gray",
-                alpha=0.8,
+                facecolor=TEXTBOX_FACECOLOR,
+                edgecolor=TEXTBOX_EDGECOLOR,
+                alpha=TEXTBOX_ALPHA,
+                boxstyle=(f"square,pad={TEXTBOX_PAD}")
             ),
+
+            fontsize=TEXTBOX_FONTSIZE,
         )
 
     #mean = np.mean(y)
