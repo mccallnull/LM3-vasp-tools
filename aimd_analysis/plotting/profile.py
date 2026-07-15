@@ -44,13 +44,10 @@ def plot_profile(
     else:
         fig = ax.figure
 
-    if grid:
-        ax.grid(True)
-
     if xlim is not None:
         ax.set_xlim(xlim)
 
-    if ylim is None:
+    if ylim is not None:
         ax.set_ylim(ylim)
 
     ax.plot(
@@ -62,6 +59,9 @@ def plot_profile(
         alpha=alpha,
         label=label,
     )
+
+    if grid:
+        ax.grid(True)
 
     ax.set_xlabel("Elapsed Time (fs)")
     ax.set_ylabel(LABELS[quantity])
