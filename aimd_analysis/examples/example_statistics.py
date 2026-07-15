@@ -12,6 +12,7 @@ from aimd_analysis.reader.report_pureHO import read_report_pureHO
 from aimd_analysis.reader.incar import read_incar
 
 from aimd_analysis.analysis.statistics import (
+    compute_statistics,
     summary,
     slice_profile,
     block_average,
@@ -44,6 +45,7 @@ print("=" * 60)
 print("Raw MD profile")
 print("=" * 60)
 
+compute_statistics(profile)
 summary(profile)
 
 
@@ -61,6 +63,7 @@ print("=" * 60)
 print("Sliced MD profile")
 print("=" * 60)
 
+compute_statistics(profile_sliced)
 summary(profile_sliced)
 
 
@@ -78,4 +81,5 @@ print("=" * 60)
 print("Block averaged MD profile")
 print("=" * 60)
 
+compute_statistics(profile_block)
 summary(profile_block)
