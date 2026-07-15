@@ -7,9 +7,53 @@ import numpy as np
 from typing import Optional
 
 from ..model.md_profile import MDProfile
+from ..model.quantity_statistics import QuantityStatistics
+
+
+# MDProfile의 시계열 quantity에 대한 통계량들 계산
+def compute_statistics(profile):
+
+    if profile.stats:
+        profile.stats.clear()
+
+    profile.stats["Epot"] = _build_statistics(profile.Epot)
+    profile.stats["Ekin"] = _build_statistics(profile.Ekin)
+    profile.stats["Etot"] = _build_statistics(profile.Etot)
+    profile.stats["T_md"] = _build_statistics(profile.T_md)
+
+    if profile.has_pressure:
+        profile.stats["P_md"] = _build_statistics(profile.P_md)
+        profile.stats["V_md"] = _build_statistics(profile.V_md)
+        profile.stats["lat_a"] = _build_statistics(profile.lat_a)
+        profile.stats["lat_b"] = _build_statistics(profile.lat_b)
+        profile.stats["lat_c"] = _build_statistics(profile.lat_c)
+        profile.stats["lat_alp"] = _build_statistics(profile.lat_alp)
+        profile.stats["lat_bet"] = _build_statistics(profile.lat_bet)
+        profile.stats["lat_gam"] = _build_statistics(profile.lat_gam)
+
+
+def _build_statistics(data) -> QuantityStatistics:
+
+    if data is None:
+        return None
+
+    return QuantityStatistics(
+        mean=np.mean(data),
+        std=np.std(data),
+
+        min=np.min(data),
+        max=np.max(data),
+    )
+
 
 # MDProfile 통계 요약 (raw MDProfile, sliced MDProfile 모두 가능.)
 def summary(profile: MDProfile):
+
+    if not profile.stats:
+        raise RuntimeError(
+            "Statistics have not been computed. "
+            "Call compute_statistics(profile) first."
+        )
 
     print("=" * 50)
     print("MD Summary")
@@ -27,30 +71,30 @@ def summary(profile: MDProfile):
 
     print()
 
-    _print_statistics("Potential Energy (eV)", profile.Epot)
-    _print_statistics("Kinetic Energy (eV)", profile.Ekin)
-    _print_statistics("Total Energy (eV)", profile.Etot)
-    _print_statistics("Temperature (K)", profile.T_md)
+    _print_statistics("Potential Energy (eV)", profile.stats["Epot"])
+    _print_statistics("Kinetic Energy (eV)", profile.stats["Ekin"])
+    _print_statistics("Total Energy (eV)", profile.stats["Etot"])
+    _print_statistics("Temperature (K)", profile.stats["T_md"])
 
     if profile.has_pressure:
         print()
-        _print_statistics("Pressure (kBar)", profile.P_md)
-        _print_statistics("Volume (A^3)", profile.V_md)
-        _print_statistics("a (A)", profile.lat_a)
-        _print_statistics("b (A)", profile.lat_b)
-        _print_statistics("c (A)", profile.lat_c)
-        _print_statistics("alpha (deg.)", profile.lat_alp)
-        _print_statistics("beta (deg.)", profile.lat_bet)
-        _print_statistics("gamma (deg.)", profile.lat_gam)
+        _print_statistics("Pressure (kBar)", profile.stats["P_md"])
+        _print_statistics("Volume (A^3)", profile.stats["V_md"])
+        _print_statistics("a (A)", profile.stats["lat_a"])
+        _print_statistics("b (A)", profile.stats["lat_b"])
+        _print_statistics("c (A)", profile.stats["lat_c"])
+        _print_statistics("alpha (deg.)", profile.stats["lat_alp"])
+        _print_statistics("beta (deg.)", profile.stats["lat_bet"])
+        _print_statistics("gamma (deg.)", profile.stats["lat_gam"])
 
     print("=" * 50)
 
 
-def _print_statistics(title: str, data):
+def _print_statistics(title: str, stats: QuantityStatistics):
 
     print(title)
-    print(f"    Mean : {np.mean(data):12.6f}")
-    print(f"    Std  : {np.std(data):12.6f}")
+    print(f"    Mean : {stats.mean:12.6f}")
+    print(f"    Std  : {stats.std:12.6f}")
     print()
 
 
@@ -124,7 +168,7 @@ def _block_average_array(arr, block_size):
 
     if arr is None:
         return None
-    
+
     if block_size == 1:
         return arr.copy()
 

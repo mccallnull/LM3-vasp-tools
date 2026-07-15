@@ -15,7 +15,7 @@ Geleral analysis tools for VASP molecular dynamics simulations.
 ## ToDo list: plotting/profile.py
 
 - [X] Line plot
-- [ ] Add histogram inset
+- [X] Add histogram inset
 - [ ] Add Mean / Std text
-- [ ] Plot style polish
+- [X] Plot style polish -- partly done.
 - [ ] Multiple profile overlay

@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Optional
+from typing import Dict, Optional
 import numpy as np
+
+from .quantity_statistics import QuantityStatistics
+
 
 @dataclass
 class MDProfile:
@@ -26,19 +29,24 @@ class MDProfile:
     # 실제 timestep (in fs) --> 실제 시간을 쓰려면, step * dt 를 하도록. (INCAR reading 필요.)
     dt: Optional[float] = field(default=None)
 
+    # 추출한 것들의 통계자료
+    stats: Dict[str, QuantityStatistics] = field(
+        default_factory=dict
+    )
+
     # 다른 유도 properties(추출하는 것들로부터 계산되는 것들)는 여기.
     @property
     def nsteps(self):
         if self.step is None:
             return 0
         return len(self.step)
-    
+
     @property
     def time(self):
         if self.dt is None:
             return None
         return (self.step - 1) * self.dt
-    
+
     @property
     def start_time(self):
         if self.dt is None:
@@ -56,13 +64,14 @@ class MDProfile:
         if self.dt is None:
             return None
         return self.end_time - self.start_time
-    
+
     @property
     def elapsed_time(self):
         if self.dt is None:
             return None
         return self.time - self.time[0]
-    
+
     @property
     def has_pressure(self): # NPT인지를 판가름할 때 편할 듯.
         return self.P_md is not None
+
