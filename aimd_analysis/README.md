@@ -18,5 +18,5 @@ Geleral analysis tools for VASP molecular dynamics simulations.
 - [X] Add histogram inset
 - [X] Add Mean / Std text
 - [X] Plot style polish -- partly done.
-- [ ] Add horizontal/vertical line for mean value on profile/histogram
-- [ ] Multiple profile overlay
+- [X] Add horizontal/vertical line for mean value on profile/histogram
+- [ ] Multiple profile overlay: time shift to some reference (raw absolute, raw elapsed, or other, such as sliced!!)
