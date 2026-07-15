@@ -17,19 +17,19 @@ def plot_profile(
     profile,
     quantity,
 
+    # Figure
     ax=None,
-
     figsize=(6, 4),
 
+    # Line style
     color=None,
     linewidth=1.5,
     linestyle="-",
     alpha=1.0,
-
     label=None,
 
+    # Axis
     grid=True,
-
     xlim=None,
     ylim=None,
 
@@ -39,9 +39,29 @@ def plot_profile(
     x = profile.elapsed_time
     y = getattr(profile, quantity)
 
-    fig, ax = plt.subplots(figsize=figsize)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        fig = ax.figure
 
-    ax.plot(x, y)
+    if grid:
+        ax.grid(True)
+
+    if xlim is not None:
+        ax.set_xlim(xlim)
+
+    if ylim is None:
+        ax.set_ylim(ylim)
+
+    ax.plot(
+        x,
+        y,
+        color=color,
+        linewidth=linewidth,
+        linestyle=linestyle,
+        alpha=alpha,
+        label=label,
+    )
 
     ax.set_xlabel("Elapsed Time (fs)")
     ax.set_ylabel(LABELS[quantity])
