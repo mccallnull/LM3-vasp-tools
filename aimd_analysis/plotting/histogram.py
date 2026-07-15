@@ -29,12 +29,18 @@ def plot_histogram(
     grid=True,
     xlim=None,
     ylim=None,
+
+    # Is inset?
+    inset=False,
 ):
 
     y = getattr(profile, quantity)
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
+        fig, ax = plt.subplots(
+            figsize=figsize,
+            constrained_layout=True
+        )
     else:
         fig = ax.figure
 
@@ -63,6 +69,15 @@ def plot_histogram(
     else:
         ax.set_ylabel("Count")
 
-    plt.tight_layout()
+    if inset:
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+
+        ax.tick_params(
+            bottom=False,
+            left=False,
+            labelbottom=False,
+            labelleft=False,
+        )
 
     return fig, ax

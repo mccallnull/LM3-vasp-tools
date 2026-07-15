@@ -10,6 +10,8 @@ from .style import (
     DEFAULT_ALPHA,
 )
 
+from .histogram import plot_histogram
+
 
 # 한 개의 quantity를 시간에 따라 그림.
 def plot_profile(
@@ -32,14 +34,18 @@ def plot_profile(
     xlim=None,
     ylim=None,
 
-    #bins=30,
+    # Include histogram?
+    inset=False,
 ):
 
     x = profile.elapsed_time
     y = getattr(profile, quantity)
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
+        fig, ax = plt.subplots(
+            figsize=figsize,
+            constrained_layout=True
+        )
     else:
         fig = ax.figure
 
@@ -65,15 +71,26 @@ def plot_profile(
     ax.set_xlabel("Elapsed Time (fs)")
     ax.set_ylabel(LABELS[quantity])
 
-    #axins = inset_axes(...)
+    # plotting histogram --> 나중에 True/False로 켜고 끄기 가능하도록 구현.
+    if inset:
+        axins = inset_axes(
+            ax,
+            width="35%",
+            height="35%",
+            loc="upper left"
+        )
 
-    #axins.hist(y, bins=bins)
+        plot_histogram(
+            profile,
+            quantity,
+            ax=axins,
+            grid=False,
+            inset=inset,
+        )
 
     #mean = np.mean(y)
     #std = np.std(y)
 
     #axins.text(...)
-
-    plt.tight_layout()
 
     return fig, ax

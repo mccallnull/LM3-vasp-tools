@@ -31,6 +31,7 @@ fig, ax = plot_profile(
     color="tab:red",
     linewidth=2,
     linestyle="--",
+    inset=True,
 )
 
 plt.show()

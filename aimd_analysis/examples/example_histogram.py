@@ -28,7 +28,7 @@ profile.dt = incar.potim
 fig, ax = plot_histogram(
     profile,
     quantity="Etot",
-    bins=20,
+    #bins=20,
     color="tab:blue",
 )
 
