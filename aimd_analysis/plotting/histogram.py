@@ -32,6 +32,9 @@ def plot_histogram(
 
     # Is inset?
     inset=False,
+
+    # Include statistics?
+    show_statistics=False,
 ):
 
     y = getattr(profile, quantity)
@@ -78,6 +81,33 @@ def plot_histogram(
             left=False,
             labelbottom=False,
             labelleft=False,
+        )
+
+        show_statistis=False
+
+    if show_statistics:
+        stats = profile.stats[quantity]
+
+        text = (
+            f"Mean = {stats.mean:.6f}\n"
+            f"Std  = {stats.std:.6f}"
+        )
+
+        ax.text(
+            0.02,
+            0.98,
+            text,
+
+            transform=ax.transAxes,
+
+            ha="left",
+            va="top",
+
+            bbox = dict(
+                facecolor="white",
+                edgecolor="gray",
+                alpha=0.8,
+            ),
         )
 
     return fig, ax

@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from aimd_analysis.reader.report_pureHO import read_report_pureHO
 from aimd_analysis.reader.incar import read_incar
 from aimd_analysis.plotting.profile import plot_profile
+from aimd_analysis.analysis.statistics import (
+    compute_statistics,
+)
 
 
 # ============================================================
@@ -20,6 +23,7 @@ incar = read_incar(incar)
 
 profile.dt = incar.potim
 
+compute_statistics(profile)
 
 # ============================================================
 # Plot
@@ -32,6 +36,7 @@ fig, ax = plot_profile(
     linewidth=2,
     linestyle="--",
     inset=True,
+    show_statistics=True,
 )
 
 plt.show()

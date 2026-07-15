@@ -36,7 +36,16 @@ def plot_profile(
 
     # Include histogram?
     inset=False,
+
+    # Include statistics?
+    show_statistics=False,
 ):
+
+    if show_statistics and not profile.stats:
+        raise RuntimeError(
+            "Statistics have not been computed. "
+            "Call compute_statistics(profile) first."
+        )
 
     x = profile.elapsed_time
     y = getattr(profile, quantity)
@@ -77,7 +86,7 @@ def plot_profile(
             ax,
             width="35%",
             height="35%",
-            loc="upper left"
+            loc="lower right"
         )
 
         plot_histogram(
@@ -86,6 +95,31 @@ def plot_profile(
             ax=axins,
             grid=False,
             inset=inset,
+        )
+
+    if show_statistics:
+        stats = profile.stats[quantity]
+
+        text = (
+            f"Mean = {stats.mean:.6f}\n"
+            f"Std  = {stats.std:.6f}"
+        )
+
+        ax.text(
+            0.02,
+            0.98,
+            text,
+
+            transform=ax.transAxes,
+
+            ha="left",
+            va="top",
+
+            bbox = dict(
+                facecolor="white",
+                edgecolor="gray",
+                alpha=0.8,
+            ),
         )
 
     #mean = np.mean(y)
