@@ -34,6 +34,8 @@ fig, ax = plot_profile(
 
 ax.set_title("Total Energy")
 
+fig.tight_layout()
+
 fig.savefig(
     str(outfile),
     dpi=300,
