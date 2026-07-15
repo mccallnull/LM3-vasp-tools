@@ -12,6 +12,8 @@ from aimd_analysis.plotting.profile import plot_profile
 
 base_dir = Path(__file__).resolve().parent
 
+outfile = base_dir / "profile.png"
+
 report = base_dir.parent / "tests" / "REPORT"
 incar = base_dir.parent / "tests" / "INCAR"
 
@@ -25,12 +27,14 @@ profile.dt = incar.potim
 # Plot
 # ============================================================
 
-plot_profile(
+fig, ax = plot_profile(
     profile,
     quantity="Etot",
-    color="tab:red",
-    linewidth=2,
-    linestyle="--",
 )
 
-plt.show()
+ax.set_title("Total Energy")
+
+fig.savefig(
+    str(outfile),
+    dpi=300,
+)
