@@ -12,12 +12,28 @@ LABELS = {
     "T_md": "Temperature (K)",
 }
 
-
+# 한 개의 quantity를 시간에 따라 그림.
 def plot_profile(
     profile,
     quantity,
-    bins=30,
-    figsize=(8, 5),
+
+    ax=None,
+
+    figsize=(6, 4),
+
+    color=None,
+    linewidth=1.5,
+    linestyle="-",
+    alpha=1.0,
+
+    label=None,
+
+    grid=True,
+
+    xlim=None,
+    ylim=None,
+
+    #bins=30,
 ):
 
     x = profile.elapsed_time
@@ -40,6 +56,5 @@ def plot_profile(
     #axins.text(...)
 
     plt.tight_layout()
-    plt.show()
 
     return fig, ax
