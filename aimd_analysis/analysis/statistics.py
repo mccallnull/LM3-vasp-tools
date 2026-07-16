@@ -47,7 +47,7 @@ def _build_statistics(data) -> QuantityStatistics:
 
 
 # MDProfile 통계 요약 (raw MDProfile, sliced MDProfile 모두 가능.)
-def summary(profile: MDProfile):
+def summary(profile: MDProfile, verbose: bool = False):
 
     if not profile.stats:
         raise RuntimeError(
@@ -62,11 +62,16 @@ def summary(profile: MDProfile):
     print(f"Number of steps : {profile.nsteps}")
 
     if profile.dt is not None:
-        print(f"Time step       : {profile.dt:.4f} fs")
-        print(f"Start time      : {profile.start_time:.4f} fs")
-        print(f"End time        : {profile.end_time:.4f} fs")
-        print(f"Start elap.time : {profile.elapsed_time[0]:.4f} fs")
-        print(f"End elap.time   : {profile.elapsed_time[-1]:.4f} fs")
+        print(f"Time step        : {profile.dt:.4f} fs")
+        print(f"Start in absolute: {profile.start_time:.4f} fs")
+        print(f"End in absolute  : {profile.end_time:.4f} fs")
+        print(f"Start in elapsed : {profile.elapsed_time[0]:.4f} fs")
+        print(f"End in elapsed   : {profile.elapsed_time[-1]:.4f} fs")
+        if verbose and (profile.parent is not None):
+            name = profile.parent.operation or "raw"
+            print(f"Parent: {name}")
+            print(f"Start in parent  : {profile.parent_time[0]:.4f} fs")
+            print(f"End in parent    : {profile.parent_time[-1]:.4f} fs")
         print(f"Duration        : {profile.duration:.4f} fs")
 
     print()
@@ -106,6 +111,9 @@ def slice_profile(
 ) -> MDProfile:
 
     return MDProfile(
+        parent=profile,
+        operation="slice",
+
         step=profile.step[start:stop],
         Epot=profile.Epot[start:stop],
         Ekin=profile.Ekin[start:stop],
@@ -144,6 +152,8 @@ def block_average(
         raise ValueError("block_size is larger than the trajectory length.")
 
     return MDProfile(
+        parent=profile,
+        operation="block_average",
 
         step=_block_average_array(profile.step, block_size),
         Epot=_block_average_array(profile.Epot, block_size),

@@ -9,6 +9,14 @@ from .quantity_statistics import QuantityStatistics
 @dataclass
 class MDProfile:
 
+    # 어떤 profile로부터 유도된 프로파일이라면....
+    parent: Optional["MDProfile"] = field(
+        default=None,
+        repr=False,
+    )
+
+    operation: Optional[str] = field(default=None)
+
     # NVT에서 기본적으로 추출할 것들.
     step: np.ndarray = field(default=None)
     Epot: np.ndarray = field(default=None)
@@ -72,6 +80,12 @@ class MDProfile:
         return self.time - self.time[0]
 
     @property
+    def parent_time(self):
+        if self.parent is None or self.dt is None:
+            return None
+
+        return self.time - self.parent.start_time
+
+    @property
     def has_pressure(self): # NPT인지를 판가름할 때 편할 듯.
         return self.P_md is not None
-

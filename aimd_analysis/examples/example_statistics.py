@@ -46,7 +46,7 @@ print("Raw MD profile")
 print("=" * 60)
 
 compute_statistics(profile)
-summary(profile)
+summary(profile, verbose=True)
 
 
 # ==========================================================
@@ -64,7 +64,7 @@ print("Sliced MD profile")
 print("=" * 60)
 
 compute_statistics(profile_sliced)
-summary(profile_sliced)
+summary(profile_sliced, verbose=True)
 
 
 # ==========================================================
@@ -82,4 +82,4 @@ print("Block averaged MD profile")
 print("=" * 60)
 
 compute_statistics(profile_block)
-summary(profile_block)
+summary(profile_block, verbose=True)

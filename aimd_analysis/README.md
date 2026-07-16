@@ -9,14 +9,9 @@ Geleral analysis tools for VASP molecular dynamics simulations.
 - [ ] Reading REPORT file (General case)
 - [X] Reading INCAR file (Only POTIM tag!!)
 - [X] Statistical analysis
-- [ ] Time profile & histogram plotting
+- [X] Time profile & histogram plotting
 - [ ] else??
 
-## ToDo list: plotting/profile.py
-
-- [X] Line plot
-- [X] Add histogram inset
-- [X] Add Mean / Std text
-- [X] Plot style polish -- partly done.
-- [X] Add horizontal/vertical line for mean value on profile/histogram
-- [ ] Multiple profile overlay: time shift to some reference (raw absolute, raw elapsed, or other, such as sliced!!)
+## ToDo list: report.py (REPORT file parser)
+- [ ] REPORT file parser, general case (NVT)
+- [ ] REPORT file parser, general case (NPT)

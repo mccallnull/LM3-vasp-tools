@@ -48,6 +48,9 @@ def plot_profile(
 
     # Include statistics?
     show_statistics=False,
+
+    # Time reference?
+    time_reference="elapsed"
 ):
 
     if not profile.stats:
@@ -56,7 +59,18 @@ def plot_profile(
             "Call compute_statistics(profile) first."
         )
 
-    x = profile.elapsed_time
+    if time_reference == "absolute":
+        x = profile.time
+    elif time_reference == "elapsed":
+        x = profile.elapsed_time
+    elif time_reference == "parent":
+        if profile.parent is None:
+            raise RuntimeError(
+                "This profile has no parent."
+            )
+        x = profile.parent_time
+
+
     y = getattr(profile, quantity)
 
     if ax is None:
@@ -96,7 +110,7 @@ def plot_profile(
     if grid:
         ax.grid(True)
 
-    ax.set_xlabel("Elapsed Time (fs)")
+    ax.set_xlabel("Time (fs)")
     ax.set_ylabel(LABELS[quantity])
 
     # plotting histogram --> 나중에 True/False로 켜고 끄기 가능하도록 구현.
