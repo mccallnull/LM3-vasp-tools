@@ -8,7 +8,7 @@ from ..model.md_profile import MDProfile
 
 
 def _parse_outcar_line(line: str, data: dict) -> None:
-    """Parse a single line of VASP REPORT."""
+    """Parse a single line of VASP OUTCAR."""
 
     line = line.replace("=", " = ")
     fields = line.split()
@@ -16,32 +16,49 @@ def _parse_outcar_line(line: str, data: dict) -> None:
     if not fields:
         return
     #여기서부터가 핵심적으로 바꿔야 할 부분(수정됨.)
-    if len(fields) >= 4 and fields[1:3] == ["Ionic", "step"]:
+    if len(fields) >= 3 and fields[0] == "POTIM":
+        data["dt"] = float(fields[2])
+
+    elif len(fields) >= 3 and fields[0] == "ISIF":
+        data["isif"] = int(fields[2])
+        data["_variable_cell"] = data["isif"] in (3,4)
+
+    elif len(fields) >= 4 and fields[1:3] == ["Ionic", "step"]:
+        data["_in_ionic_steps"] = True
         data["step"].append(int(fields[3]))
 
-    elif len(fields) >= 5 and fields[1] == "ion-electron":
-        data["Epot"].append(float(fields[4]))
+    elif data["_in_ionic_steps"]:
+        if data["_reading_lattice"]:
+            data["_lattice_buffer"].append(
+                [float(x) for x in fields[:3]]
+            )
 
-    elif len(fields) >= 5 and fields[2] == "EKIN":
-        data["_ekin"] = float(fields[4])
+            if len(data["_lattice_buffer"]) == 3:
+                data["lat_vecs"].append(data["_lattice_buffer"])
+                data["_lattice_buffer"] = []
+                data["_reading_lattice"] = False
 
-    elif len(fields) >= 6 and fields[2] == "EKIN_LAT":
-        data["_ekin_lat"] = float(fields[4])
+        elif len(fields) >= 5 and fields[1] == "ion-electron":
+            data["Epot"].append(float(fields[4]))
 
-        data["Ekin"].append(data["_ekin"] + data["_ekin_lat"])
-        data["T_md"].append(float(fields[6]))
+        elif len(fields) >= 5 and fields[2] == "EKIN":
+            data["_ekin"] = float(fields[4])
 
-    elif len(fields) >= 3 and fields[0] == "POTIM":
-        data["dt"] = float(fields[2])
-    #바꿔야 할 부분 끝.
+        elif len(fields) >= 6 and fields[2] == "EKIN_LAT":
+            data["_ekin_lat"] = float(fields[4])
 
-    # 나중에 NPT 확장은 여기 추가
-    #
-    # elif fields[0] == "...":
-    #     data["P_md"].append(...)
-    #
-    # elif fields[0] == "...":
-    #     data["V_md"].append(...)
+            data["Ekin"].append(data["_ekin"] + data["_ekin_lat"])
+            data["T_md"].append(float(fields[6]))
+
+        elif len(fields) >= 5 and fields[:2] == ["total", "pressure"]:
+            data["P_md"].append(float(fields[3]))
+
+        elif len(fields) >= 5 and fields[:3] == ["volume", "of", "cell"] and data["_variable_cell"]:
+            data["V_md"].append(float(fields[4]))
+
+        elif fields[:3] == ["direct", "lattice", "vectors"] and data["_variable_cell"]:
+            data["_reading_lattice"] = True
+            data["_lattice_buffer"] = []
 
 
 def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
@@ -51,10 +68,18 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
         "Epot": [],
         "Ekin": [],
         "T_md": [],
+        "P_md": [],
+        "V_md": [],
+        "lat_vecs": [],
         "dt": None,
+        "isif": None,
 
         "_ekin": None,
         "_ekin_lat": None,
+        "_in_ionic_steps": False,
+        "_reading_lattice": False,
+        "_lattice_buffer": [],
+        "_variable_cell": False,
     }
 
     with open(filename, "r") as f:
@@ -69,7 +94,21 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
     step_ = np.asarray(data["step"])
     epot = np.asarray(data["Epot"])
     ekin = np.asarray(data["Ekin"])
-    temp = np.asarray(data["T_md"])
+    temperature = np.asarray(data["T_md"])
+    pressure = np.asarray(data["P_md"])
+
+    volume = (
+        np.asarray(data["V_md"])
+        if data["_variable_cell"]
+        else None
+    )
+
+    lat_vecs = (
+        np.asarray(data["lat_vecs"])
+        if data["_variable_cell"]
+        else None
+    )
+
     dt = data["dt"]
 
     return MDProfile(
@@ -77,8 +116,11 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
         Epot=epot,
         Ekin=ekin,
         Etot=epot + ekin,
-        T_md=temp,
+        T_md=temperature,
         dt=dt,
+        P_md=pressure,
+        V_md=volume,
+        lat_vecs=lat_vecs
     )
 
 def _validate_data(data: dict) -> None:
@@ -93,6 +135,17 @@ def _validate_data(data: dict) -> None:
 
     if len(data["T_md"]) != n:
         raise ValueError("Different data length!!")
+
+    if len(data["P_md"]) != n:
+        raise ValueError("Different data length!!")
+
+    if data["_variable_cell"]:
+
+        if len(data["V_md"]) != n:
+            raise ValueError("Different data length!!")
+
+        if len(data["lat_vecs"]) != n:
+            raise ValueError("Different data length!!")
 
 
 def _print_loaded_data(data: dict) -> None:

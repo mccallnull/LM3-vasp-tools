@@ -23,10 +23,17 @@ class MDProfile:
     Ekin: np.ndarray = field(default=None)
     Etot: np.ndarray = field(default=None)
     T_md: np.ndarray = field(default=None)
+    P_md: np.ndarray = field(default=None)
 
     # NPT라면, 이것들도 추가로 추출할 것.
-    P_md: Optional[np.ndarray] = field(default=None)
     V_md: Optional[np.ndarray] = field(default=None)
+    # Lattice vectors (shape = (nstep, 3, 3))
+    # lat_vecs[i] = [[ax, ay, az],
+    #                [bx, by, bz],
+    #                [cx, cy, cz]]
+    lat_vecs: Optional[np.ndarray] = field(default=None)
+
+    # Derived lattice parameters (computed in geometry.py)
     lat_a: Optional[np.ndarray] = field(default=None)
     lat_b: Optional[np.ndarray] = field(default=None)
     lat_c: Optional[np.ndarray] = field(default=None)
@@ -37,7 +44,7 @@ class MDProfile:
     # 실제 timestep (in fs) --> 실제 시간을 쓰려면, step * dt 를 하도록. (INCAR reading 필요.)
     dt: Optional[float] = field(default=None)
 
-    # 추출한 것들의 통계자료
+    # Statistical data of time sequences (computed in statistics.py)
     stats: Dict[str, Optional[QuantityStatistics]] = field(
         default_factory=dict
     )
@@ -88,5 +95,5 @@ class MDProfile:
         return self.time - self.parent.start_time
 
     @property
-    def has_pressure(self) -> bool: # NPT인지를 판가름할 때 편할 듯.
-        return self.P_md is not None
+    def has_variable_cell(self) -> bool: # NPT인지를 판가름할 때 편할 듯.
+        return self.V_md is not None
