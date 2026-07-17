@@ -11,7 +11,7 @@ from ..model.quantity_statistics import QuantityStatistics
 
 
 # MDProfile의 시계열 quantity에 대한 통계량들 계산
-def compute_statistics(profile):
+def compute_statistics(profile: MDProfile) -> None:
 
     if profile.stats:
         profile.stats.clear()
@@ -32,7 +32,7 @@ def compute_statistics(profile):
         profile.stats["lat_gam"] = _build_statistics(profile.lat_gam)
 
 
-def _build_statistics(data) -> QuantityStatistics:
+def _build_statistics(data: Optional[np.ndarray]) -> Optional[QuantityStatistics]:
 
     if data is None:
         return None
@@ -47,7 +47,7 @@ def _build_statistics(data) -> QuantityStatistics:
 
 
 # MDProfile 통계 요약 (raw MDProfile, sliced MDProfile 모두 가능.)
-def summary(profile: MDProfile, verbose: bool = False):
+def summary(profile: MDProfile, verbose: bool = False) -> None:
 
     if not profile.stats:
         raise RuntimeError(
@@ -95,7 +95,7 @@ def summary(profile: MDProfile, verbose: bool = False):
     print("=" * 50)
 
 
-def _print_statistics(title: str, stats: QuantityStatistics):
+def _print_statistics(title: str, stats: QuantityStatistics) -> None:
 
     print(title)
     print(f"    Mean : {stats.mean:12.6f}")
@@ -133,7 +133,12 @@ def slice_profile(
     )
 
 
-def _slice_optional(arr, start, stop):
+def _slice_optional(
+    arr: Optional[np.ndarray],
+    start: int,
+    stop: int,
+) -> Optional[np.ndarray]:
+
     if arr is None:
         return None
     return arr[start:stop]
@@ -174,7 +179,7 @@ def block_average(
     )
 
 
-def _block_average_array(arr, block_size):
+def _block_average_array(arr: Optional[np.ndarray], block_size: int) -> Optional[np.ndarray]:
 
     if arr is None:
         return None

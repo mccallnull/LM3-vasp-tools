@@ -28,8 +28,8 @@ base_dir = Path(__file__).resolve().parent
 outfile = base_dir / "profile_overlay.png"
 #outfile = base_dir / "profile_overlay_not_parent.png"
 
-report = base_dir.parent / "tests" / "REPORT"
-incar = base_dir.parent / "tests" / "INCAR"
+report = base_dir.parent / "tests" / "REPORT_pureHO"
+incar = base_dir.parent / "tests" / "INCAR_pureHO"
 
 profile = read_report_pureHO(report)
 incar = read_incar(incar)

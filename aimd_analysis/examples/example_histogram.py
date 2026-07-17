@@ -14,8 +14,8 @@ from aimd_analysis.analysis.statistics import (
 
 base_dir = Path(__file__).resolve().parent
 
-report = base_dir.parent / "tests" / "REPORT"
-incar = base_dir.parent / "tests" / "INCAR"
+report = base_dir.parent / "tests" / "REPORT_pureHO"
+incar = base_dir.parent / "tests" / "INCAR_pureHO"
 
 profile = read_report_pureHO(report)
 incar = read_incar(incar)

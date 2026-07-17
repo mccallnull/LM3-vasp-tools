@@ -7,10 +7,10 @@ import numpy as np
 from ..model.md_profile import MDProfile
 
 
-def _parse_report_line_pureHO(line: str, data: dict):
+def _parse_report_line_pureHO(line: str, data: dict) -> None:
     """Parse a single line of VASP REPORT."""
 
-    line = line.replace(">","")
+    line = line.replace(">", "")
     fields = line.split()
 
     if not fields:
@@ -55,7 +55,7 @@ def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
 
     _validate_data(data)
 
-    step_ = np.asarray(data["step"]) 
+    step_ = np.asarray(data["step"])
     epot = np.asarray(data["Epot"])
     ekin = np.asarray(data["Ekin"])
     temp = np.asarray(data["T_md"])
@@ -68,7 +68,7 @@ def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
         T_md=temp,
     )
 
-def _validate_data(data):
+def _validate_data(data: dict) -> None:
 
     n = len(data["step"])
 
@@ -82,7 +82,7 @@ def _validate_data(data):
         raise ValueError("Different data length!!")
 
 
-def _print_loaded_data(data):
+def _print_loaded_data(data: dict) -> None:
 
     for key, value in data.items():
         print(f"{key:6s}: {len(value)}")

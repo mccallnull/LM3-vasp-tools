@@ -1,50 +1,43 @@
 import matplotlib.pyplot as plt
+from typing import Dict, Optional, Any
 
-from .style import (
-    LABELS,
-    DEFAULT_FIGSIZE,
-    DEFAULT_ALPHA,
-    MEAN_LINESTYLE,
-    MEAN_LINEWIDTH,
-    MEAN_LINECOLOR,
-    MEAN_LINEALPHA,
-    TEXTBOX_FONTSIZE,
-    TEXTBOX_ALPHA,
-    TEXTBOX_PAD,
-    TEXTBOX_EDGECOLOR,
-    TEXTBOX_FACECOLOR,
-)
+from ..model.md_profile import MDProfile
+from . import style
 
 
 # Plot histogram of one quantity.
 def plot_histogram(
-    profile,
-    quantity,
+    profile: MDProfile,
+    quantity: str,
 
     # Figure
     ax=None,
-    figsize=DEFAULT_FIGSIZE,
+    figsize=style.DEFAULT_FIGSIZE,
 
     # Histogram
-    bins=30,
-    density=False,
+    bins: int = 30,
+    density: bool = False,
 
     # Style
     color=None,
-    alpha=DEFAULT_ALPHA,
+    alpha=style.DEFAULT_ALPHA,
     label=None,
 
     # Axis
-    grid=True,
+    grid: bool = True,
     xlim=None,
     ylim=None,
 
     # Is inset?
-    inset=False,
+    inset: bool  =False,
 
     # Include statistics?
-    show_statistics=False,
-):
+    show_statistics: bool = False,
+
+    # Details for style
+    mean_kwargs: Optional[Dict[str, Any]] = None,
+    textbox_kwargs: Optional[Dict[str, Any]] = None,
+) -> tuple:
 
     if not profile.stats:
         raise RuntimeError(
@@ -52,6 +45,7 @@ def plot_histogram(
             "Call compute_statistics(profile) first."
         )
 
+    # Setup histogram
     y = getattr(profile, quantity)
 
     if ax is None:
@@ -71,16 +65,25 @@ def plot_histogram(
         label=label,
     )
 
+    # Setup mean vertical line
     stats = profile.stats[quantity]
+
+    default_mean_kwargs = dict(
+        color=style.MEAN_LINECOLOR,
+        linestyle=style.MEAN_LINESTYLE,
+        linewidth=style.MEAN_LINEWIDTH,
+        alpha=style.MEAN_LINEALPHA,
+    )
+
+    if mean_kwargs is not None:
+        default_mean_kwargs.update(mean_kwargs)
 
     ax.axvline(
         stats.mean,
-        color=MEAN_LINECOLOR,
-        linestyle=MEAN_LINESTYLE,
-        linewidth=MEAN_LINEWIDTH,
-        alpha=MEAN_LINEALPHA,
+        **default_mean_kwargs,
     )
 
+    # Setup axes and grids
     if grid:
         ax.grid(True)
 
@@ -90,7 +93,7 @@ def plot_histogram(
     if ylim is not None:
         ax.set_ylim(ylim)
 
-    ax.set_xlabel(LABELS[quantity])
+    ax.set_xlabel(style.LABELS[quantity])
 
     if density:
         ax.set_ylabel("Density")
@@ -108,15 +111,26 @@ def plot_histogram(
             labelleft=False,
         )
 
+    # Setup statistics textbox
     if show_statistics:
         text = (
             f"{'Mean':<5}: {stats.mean:10.6f}\n"
             f"{'Std':<5}: {stats.std:10.6f}"
         )
 
+        default_textbox_kwargs = dict(
+            facecolor=style.TEXTBOX_FACECOLOR,
+            edgecolor=style.TEXTBOX_EDGECOLOR,
+            alpha=style.TEXTBOX_ALPHA,
+            boxstyle=f"square,pad={style.TEXTBOX_PAD}",
+        )
+
+        if textbox_kwargs is not None:
+            default_textbox_kwargs.update(textbox_kwargs)
+
         ax.text(
-            0.03,
-            0.95,
+            style.TEXTBOX_X,
+            style.TEXTBOX_Y,
             text,
 
             transform=ax.transAxes,
@@ -124,14 +138,9 @@ def plot_histogram(
             ha="left",
             va="top",
 
-            bbox = dict(
-                facecolor=TEXTBOX_FACECOLOR,
-                edgecolor=TEXTBOX_EDGECOLOR,
-                alpha=TEXTBOX_ALPHA,
-                boxstyle=(f"square,pad={TEXTBOX_PAD}")
-            ),
+            bbox = default_textbox_kwargs,
 
-            fontsize=TEXTBOX_FONTSIZE,
+            fontsize=style.TEXTBOX_FONTSIZE,
         )
 
     return fig, ax

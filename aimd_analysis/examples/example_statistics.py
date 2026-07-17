@@ -20,19 +20,18 @@ from aimd_analysis.analysis.statistics import (
 
 from pathlib import Path
 
-EXAMPLE_DIR = Path(__file__).resolve().parent
-TEST_DIR = EXAMPLE_DIR.parent / "tests"
+base_dir = Path(__file__).resolve().parent
 
-report_file = TEST_DIR / "REPORT"
-incar_file = TEST_DIR / "INCAR"
+report = base_dir.parent / "tests" / "REPORT_pureHO"
+incar = base_dir.parent / "tests" / "INCAR_pureHO"
 
 # ==========================================================
 # Read REPORT / INCAR
 # ==========================================================
 
-profile = read_report_pureHO(report_file)
+profile = read_report_pureHO(report)
 
-incar = read_incar(incar_file)
+incar = read_incar(incar)
 profile.dt = incar.potim
 
 

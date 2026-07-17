@@ -38,54 +38,55 @@ class MDProfile:
     dt: Optional[float] = field(default=None)
 
     # 추출한 것들의 통계자료
-    stats: Dict[str, QuantityStatistics] = field(
+    stats: Dict[str, Optional[QuantityStatistics]] = field(
         default_factory=dict
     )
 
     # 다른 유도 properties(추출하는 것들로부터 계산되는 것들)는 여기.
     @property
-    def nsteps(self):
+    def nsteps(self) -> int:
         if self.step is None:
             return 0
         return len(self.step)
 
     @property
-    def time(self):
+    def time(self) -> Optional[np.ndarray]:
         if self.dt is None:
             return None
+        # In VASP Ionic step 1 is assigned to t = 0
         return (self.step - 1) * self.dt
 
     @property
-    def start_time(self):
+    def start_time(self) -> Optional[float]:
         if self.dt is None:
             return None
         return self.time[0]
 
     @property
-    def end_time(self):
+    def end_time(self) -> Optional[float]:
         if self.dt is None:
             return None
         return self.time[-1]
 
     @property
-    def duration(self):
+    def duration(self) -> Optional[float]:
         if self.dt is None:
             return None
         return self.end_time - self.start_time
 
     @property
-    def elapsed_time(self):
+    def elapsed_time(self) -> Optional[np.ndarray]:
         if self.dt is None:
             return None
         return self.time - self.time[0]
 
     @property
-    def parent_time(self):
+    def parent_time(self) -> Optional[np.ndarray]:
         if self.parent is None or self.dt is None:
             return None
 
         return self.time - self.parent.start_time
 
     @property
-    def has_pressure(self): # NPT인지를 판가름할 때 편할 듯.
+    def has_pressure(self) -> bool: # NPT인지를 판가름할 때 편할 듯.
         return self.P_md is not None

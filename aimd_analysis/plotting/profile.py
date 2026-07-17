@@ -1,57 +1,46 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from typing import Dict, Optional, Any
 
-from .style import (
-    LABELS,
-    DEFAULT_FIGSIZE,
-    DEFAULT_LINEWIDTH,
-    DEFAULT_LINESTYLE,
-    DEFAULT_ALPHA,
-    MEAN_LINESTYLE,
-    MEAN_LINEWIDTH,
-    MEAN_LINECOLOR,
-    MEAN_LINEALPHA,
-    TEXTBOX_FONTSIZE,
-    TEXTBOX_ALPHA,
-    TEXTBOX_PAD,
-    TEXTBOX_EDGECOLOR,
-    TEXTBOX_FACECOLOR,
-)
-
+from ..model.md_profile import MDProfile
+from . import style
 from .histogram import plot_histogram
 
 
 # 한 개의 quantity를 시간에 따라 그림.
 def plot_profile(
-    profile,
-    quantity,
+    profile: MDProfile,
+    quantity: str,
 
     # Figure
     ax=None,
-    figsize=DEFAULT_FIGSIZE,
+    figsize=style.DEFAULT_FIGSIZE,
 
     # Line style
     color=None,
-    linewidth=DEFAULT_LINEWIDTH,
-    linestyle=DEFAULT_LINESTYLE,
-    alpha=DEFAULT_ALPHA,
+    linewidth=style.DEFAULT_LINEWIDTH,
+    linestyle=style.DEFAULT_LINESTYLE,
+    alpha=style.DEFAULT_ALPHA,
     label=None,
 
     # Axis
-    grid=True,
+    grid: bool = True,
     xlim=None,
     ylim=None,
 
     # Include histogram?
-    inset=False,
+    inset: bool = False,
 
     # Include statistics?
-    show_statistics=False,
+    show_statistics: bool = False,
 
     # Time reference?
-    time_reference="elapsed"
-):
+    time_reference: str = "elapsed",
+
+    # Details for style
+    mean_kwargs: Optional[Dict[str, Any]] = None,
+    textbox_kwargs: Optional[Dict[str, Any]] = None,
+) -> tuple:
 
     if not profile.stats:
         raise RuntimeError(
@@ -59,6 +48,7 @@ def plot_profile(
             "Call compute_statistics(profile) first."
         )
 
+    # Setip profile plot
     if time_reference == "absolute":
         x = profile.time
     elif time_reference == "elapsed":
@@ -69,7 +59,11 @@ def plot_profile(
                 "This profile has no parent."
             )
         x = profile.parent_time
-
+    else:
+        raise ValueError(
+            f"Unknown time_reference: {time_reference!r}. "
+            "Choose from 'absolute', 'elapsed', or 'parent'."
+        )
 
     y = getattr(profile, quantity)
 
@@ -81,11 +75,7 @@ def plot_profile(
     else:
         fig = ax.figure
 
-    if xlim is not None:
-        ax.set_xlim(xlim)
 
-    if ylim is not None:
-        ax.set_ylim(ylim)
 
     ax.plot(
         x,
@@ -97,23 +87,38 @@ def plot_profile(
         label=label,
     )
 
+    # Setup mean horizontal line
     stats = profile.stats[quantity]
+
+    default_mean_kwargs = dict(
+        color=style.MEAN_LINECOLOR,
+        linestyle=style.MEAN_LINESTYLE,
+        linewidth=style.MEAN_LINEWIDTH,
+        alpha=style.MEAN_LINEALPHA,
+    )
+
+    if mean_kwargs is not None:
+        default_mean_kwargs.update(mean_kwargs)
 
     ax.axhline(
         stats.mean,
-        color=MEAN_LINECOLOR,
-        linestyle=MEAN_LINESTYLE,
-        linewidth=MEAN_LINEWIDTH,
-        alpha=MEAN_LINEALPHA,
+        **default_mean_kwargs,
     )
 
+    # Setup axes and grids
     if grid:
         ax.grid(True)
 
-    ax.set_xlabel("Time (fs)")
-    ax.set_ylabel(LABELS[quantity])
+    if xlim is not None:
+        ax.set_xlim(xlim)
 
-    # plotting histogram --> 나중에 True/False로 켜고 끄기 가능하도록 구현.
+    if ylim is not None:
+        ax.set_ylim(ylim)
+
+    ax.set_xlabel("Time (fs)")
+    ax.set_ylabel(style.LABELS[quantity])
+
+    # Setup inset histogram
     if inset:
         axins = inset_axes(
             ax,
@@ -130,15 +135,26 @@ def plot_profile(
             inset=inset,
         )
 
+    # Setup statistics textbox
     if show_statistics:
         text = (
             f"{'Mean':<5}: {stats.mean:10.6f}\n"
             f"{'Std':<5}: {stats.std:10.6f}"
         )
 
+        default_textbox_kwargs = dict(
+            facecolor=style.TEXTBOX_FACECOLOR,
+            edgecolor=style.TEXTBOX_EDGECOLOR,
+            alpha=style.TEXTBOX_ALPHA,
+            boxstyle=f"square,pad={style.TEXTBOX_PAD}",
+        )
+
+        if textbox_kwargs is not None:
+            default_textbox_kwargs.update(textbox_kwargs)
+
         ax.text(
-            0.03,
-            0.95,
+            style.TEXTBOX_X,
+            style.TEXTBOX_Y,
             text,
 
             transform=ax.transAxes,
@@ -146,19 +162,9 @@ def plot_profile(
             ha="left",
             va="top",
 
-            bbox = dict(
-                facecolor=TEXTBOX_FACECOLOR,
-                edgecolor=TEXTBOX_EDGECOLOR,
-                alpha=TEXTBOX_ALPHA,
-                boxstyle=(f"square,pad={TEXTBOX_PAD}")
-            ),
+            bbox = default_textbox_kwargs,
 
-            fontsize=TEXTBOX_FONTSIZE,
+            fontsize=style.TEXTBOX_FONTSIZE,
         )
-
-    #mean = np.mean(y)
-    #std = np.std(y)
-
-    #axins.text(...)
 
     return fig, ax

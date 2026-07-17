@@ -2,18 +2,17 @@
 # 지금은 POTIM만 parser에 들어감.
 
 from pathlib import Path
-import numpy as np
 
 from ..model.incar_tags import INCAR
 
-def _parse_incar_line(line: str, data: dict):
+def _parse_incar_line(line: str, data: dict) -> None:
     """Parse a single line of VASP INCAR/"""
 
     fields = line.replace("=", " ").split()
 
     if not fields:
         return
-    
+
     if fields[0] == "POTIM":
         data["potim"] = float(fields[1])
 
@@ -36,7 +35,7 @@ def read_incar(filename: Path) -> INCAR:
         potim=data["potim"],
     )
 
-def _validate_data(data):
+def _validate_data(data: dict) -> None:
 
-    if data["potim"] == None:
+    if data["potim"] is None:
         raise ValueError("No POTIM in INCAR!!")
