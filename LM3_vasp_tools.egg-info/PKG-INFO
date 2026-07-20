@@ -1,0 +1,10 @@
+Metadata-Version: 1.2
+Name: LM3-vasp-tools
+Version: 0.1.0
+Summary: A Python library for VASP analysis in LM3 Lab
+Home-page: UNKNOWN
+Author: Won June Kim
+License: LM3 Lab
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.7
