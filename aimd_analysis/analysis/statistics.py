@@ -20,9 +20,9 @@ def compute_statistics(profile: MDProfile) -> None:
     profile.stats["Ekin"] = _build_statistics(profile.Ekin)
     profile.stats["Etot"] = _build_statistics(profile.Etot)
     profile.stats["T_md"] = _build_statistics(profile.T_md)
+    profile.stats["P_md"] = _build_statistics(profile.P_md)
 
-    if profile.has_pressure:
-        profile.stats["P_md"] = _build_statistics(profile.P_md)
+    if profile.has_variable_cell:
         profile.stats["V_md"] = _build_statistics(profile.V_md)
         profile.stats["lat_a"] = _build_statistics(profile.lat_a)
         profile.stats["lat_b"] = _build_statistics(profile.lat_b)
@@ -80,10 +80,9 @@ def summary(profile: MDProfile, verbose: bool = False) -> None:
     _print_statistics("Kinetic Energy (eV)", profile.stats["Ekin"])
     _print_statistics("Total Energy (eV)", profile.stats["Etot"])
     _print_statistics("Temperature (K)", profile.stats["T_md"])
+    _print_statistics("Pressure (kBar)", profile.stats["P_md"])
 
-    if profile.has_pressure:
-        print()
-        _print_statistics("Pressure (kBar)", profile.stats["P_md"])
+    if profile.has_variable_cell:
         _print_statistics("Volume (A^3)", profile.stats["V_md"])
         _print_statistics("a (A)", profile.stats["lat_a"])
         _print_statistics("b (A)", profile.stats["lat_b"])
@@ -96,6 +95,12 @@ def summary(profile: MDProfile, verbose: bool = False) -> None:
 
 
 def _print_statistics(title: str, stats: QuantityStatistics) -> None:
+
+    if stats is None:
+        print(f"{title}")
+        print("    Not available")
+        print()
+        return
 
     print(title)
     print(f"    Mean : {stats.mean:12.6f}")
@@ -119,8 +124,8 @@ def slice_profile(
         Ekin=profile.Ekin[start:stop],
         Etot=profile.Etot[start:stop],
         T_md=profile.T_md[start:stop],
-
         P_md=_slice_optional(profile.P_md, start, stop),
+
         V_md=_slice_optional(profile.V_md, start, stop),
         lat_a=_slice_optional(profile.lat_a, start, stop),
         lat_b=_slice_optional(profile.lat_b, start, stop),
@@ -165,8 +170,8 @@ def block_average(
         Ekin=_block_average_array(profile.Ekin, block_size),
         Etot=_block_average_array(profile.Etot, block_size),
         T_md=_block_average_array(profile.T_md, block_size),
-
         P_md=_block_average_array(profile.P_md, block_size),
+
         V_md=_block_average_array(profile.V_md, block_size),
         lat_a=_block_average_array(profile.lat_a, block_size),
         lat_b=_block_average_array(profile.lat_b, block_size),

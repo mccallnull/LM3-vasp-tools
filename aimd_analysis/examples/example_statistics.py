@@ -2,7 +2,7 @@
 example_statistics.py
 
 Example:
-    - Read OUTCAR
+    - Read OUTCAR: regardless of NVT or NPT
     - Print MD summary
     - Slice MD trajectory
     - Block-average MD trajectory
@@ -21,13 +21,14 @@ from pathlib import Path
 
 base_dir = Path(__file__).resolve().parent
 
-outcar= base_dir.parent / "tests" / "OUTCAR_nvt"
+#outcar= base_dir.parent / "tests" / "OUTCAR_nvt"
+outcar= base_dir.parent / "tests" / "OUTCAR_npt"
 
 # ==========================================================
 # Read REPORT
 # ==========================================================
 
-profile = read_outcar(outcar, verbose=True)
+profile = read_outcar(outcar)
 
 # ==========================================================
 # Raw MD profile

@@ -1,8 +1,7 @@
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-from aimd_analysis.reader.report_pureHO import read_report_pureHO
-from aimd_analysis.reader.incar import read_incar
+from aimd_analysis.reader.outcar import read_outcar
 from aimd_analysis.plotting.profile import plot_profile
 from aimd_analysis.analysis.statistics import (
     compute_statistics,
@@ -28,13 +27,9 @@ base_dir = Path(__file__).resolve().parent
 outfile = base_dir / "profile_overlay.png"
 #outfile = base_dir / "profile_overlay_not_parent.png"
 
-report = base_dir.parent / "tests" / "REPORT_pureHO"
-incar = base_dir.parent / "tests" / "INCAR_pureHO"
+outcar = base_dir.parent / "tests" / "OUTCAR_npt"
 
-profile = read_report_pureHO(report)
-incar = read_incar(incar)
-
-profile.dt = incar.potim
+profile = read_outcar(outcar)
 
 # ============================================================
 # Slice & Block-average
