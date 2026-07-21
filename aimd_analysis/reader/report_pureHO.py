@@ -16,10 +16,7 @@ def _parse_report_line_pureHO(line: str, data: dict) -> None:
     if not fields:
         return
 
-    if fields[0] == "MD":
-        data["step"].append(int(fields[3]))
-
-    elif fields[0] == "e_b":
+    if fields[0] == "e_b":
         data["Ekin"].append(float(fields[3]))
 
     elif fields[0] == "e_ti":
@@ -40,7 +37,6 @@ def _parse_report_line_pureHO(line: str, data: dict) -> None:
 def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
 
     data = {
-        "step": [],
         "Epot": [],
         "Ekin": [],
         "T_md": [],
@@ -55,13 +51,11 @@ def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
 
     _validate_data(data)
 
-    step_ = np.asarray(data["step"])
     epot = np.asarray(data["Epot"])
     ekin = np.asarray(data["Ekin"])
     temp = np.asarray(data["T_md"])
 
     return MDProfile(
-        step=step_,
         Epot=epot,
         Ekin=ekin,
         Etot=epot + ekin,
@@ -70,10 +64,7 @@ def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
 
 def _validate_data(data: dict) -> None:
 
-    n = len(data["step"])
-
-    if len(data["Epot"]) != n:
-        raise ValueError("Different data length!!")
+    n = len(data["Epot"])
 
     if len(data["Ekin"]) != n:
         raise ValueError("Different data length!!")

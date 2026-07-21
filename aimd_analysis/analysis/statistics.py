@@ -59,6 +59,7 @@ def summary(profile: MDProfile, verbose: bool = False) -> None:
     print("MD Summary")
     print("=" * 50)
 
+    print(f"Step range      : {profile.step[0]} -> {profile.step[-1]}")
     print(f"Number of steps : {profile.nsteps}")
 
     if profile.dt is not None:
@@ -119,7 +120,6 @@ def slice_profile(
         parent=profile,
         operation="slice",
 
-        step=profile.step[start:stop],
         Epot=profile.Epot[start:stop],
         Ekin=profile.Ekin[start:stop],
         Etot=profile.Etot[start:stop],
@@ -135,6 +135,8 @@ def slice_profile(
         lat_gam=_slice_optional(profile.lat_gam, start, stop),
 
         dt=profile.dt,
+        stride=profile.stride,
+        first_step=profile.step[start],
     )
 
 
@@ -165,7 +167,6 @@ def block_average(
         parent=profile,
         operation="block_average",
 
-        step=_block_average_array(profile.step, block_size),
         Epot=_block_average_array(profile.Epot, block_size),
         Ekin=_block_average_array(profile.Ekin, block_size),
         Etot=_block_average_array(profile.Etot, block_size),
@@ -181,6 +182,8 @@ def block_average(
         lat_gam=_block_average_array(profile.lat_gam, block_size),
 
         dt=profile.dt,
+        stride=profile.stride * block_size,
+        first_step = profile.step[block_size // 2],
     )
 
 

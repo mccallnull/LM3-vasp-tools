@@ -25,7 +25,6 @@ def _parse_outcar_line(line: str, data: dict) -> None:
 
     elif len(fields) >= 4 and fields[1:3] == ["Ionic", "step"]:
         data["_in_ionic_steps"] = True
-        data["step"].append(int(fields[3]))
 
     elif data["_in_ionic_steps"]:
         if data["_reading_lattice"]:
@@ -64,7 +63,6 @@ def _parse_outcar_line(line: str, data: dict) -> None:
 def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
 
     data = {
-        "step": [],
         "Epot": [],
         "Ekin": [],
         "T_md": [],
@@ -91,7 +89,6 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
 
     _validate_data(data)
 
-    step_ = np.asarray(data["step"])
     epot = np.asarray(data["Epot"])
     ekin = np.asarray(data["Ekin"])
     temperature = np.asarray(data["T_md"])
@@ -109,15 +106,13 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
         else None
     )
 
-    dt = data["dt"]
-
     return MDProfile(
-        step=step_,
         Epot=epot,
         Ekin=ekin,
         Etot=epot + ekin,
         T_md=temperature,
-        dt=dt,
+        dt=data["dt"],
+        stride=1,
         P_md=pressure,
         V_md=volume,
         lat_vecs=lat_vecs
@@ -125,10 +120,7 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
 
 def _validate_data(data: dict) -> None:
 
-    n = len(data["step"])
-
-    if len(data["Epot"]) != n:
-        raise ValueError("Different data length!!")
+    n = len(data["Epot"])
 
     if len(data["Ekin"]) != n:
         raise ValueError("Different data length!!")

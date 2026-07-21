@@ -22,6 +22,8 @@ profile = read_report_pureHO(report)
 incar = read_incar(incar)
 
 profile.dt = incar.potim
+profile.stride = incar.ml_outblock
+profile.first_step = incar.ml_outblock
 
 compute_statistics(profile)
 

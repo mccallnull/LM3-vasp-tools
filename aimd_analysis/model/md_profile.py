@@ -18,7 +18,6 @@ class MDProfile:
     operation: Optional[str] = field(default=None)
 
     # NVT에서 기본적으로 추출할 것들.
-    step: np.ndarray = field(default=None)
     Epot: np.ndarray = field(default=None)
     Ekin: np.ndarray = field(default=None)
     Etot: np.ndarray = field(default=None)
@@ -41,7 +40,11 @@ class MDProfile:
     lat_bet: Optional[np.ndarray] = field(default=None)
     lat_gam: Optional[np.ndarray] = field(default=None)
 
-    # 실제 timestep (in fs) --> 실제 시간을 쓰려면, step * dt 를 하도록. (INCAR reading 필요.)
+    # self.stride, self.first_step: step 간격 및 원점
+    stride: int = 1
+    first_step: int = 1
+
+    # 실제 timestep (in fs) --> 실제 시간을 쓰려면, step * dt 를 하도록.
     dt: Optional[float] = field(default=None)
 
     # Statistical data of time sequences (computed in statistics.py)
@@ -52,9 +55,25 @@ class MDProfile:
     # 다른 유도 properties(추출하는 것들로부터 계산되는 것들)는 여기.
     @property
     def nsteps(self) -> int:
-        if self.step is None:
-            return 0
-        return len(self.step)
+        if self.Etot is not None:
+            return len(self.Etot)
+
+        if self.lat_vecs is not None:
+            return len(self.lat_vecs)
+
+        return 0
+
+    @property
+    def indices(self) -> np.ndarray:
+        if self.nsteps == 0:
+            return None
+        return np.arange(self.nsteps)
+
+    @property
+    def step(self) -> Optional[np.ndarray]:
+        if self.nsteps == 0:
+            return None
+        return self.first_step + self.indices * self.stride
 
     @property
     def time(self) -> Optional[np.ndarray]:

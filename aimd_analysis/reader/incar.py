@@ -15,6 +15,8 @@ def _parse_incar_line(line: str, data: dict) -> None:
 
     if fields[0] == "POTIM":
         data["potim"] = float(fields[1])
+    elif fields[0] == "ML_OUTBLOCK":
+        data["ml_outblock"] = int(fields[1])
 
     # 이후 더 필요한 tag는 여기 추가
 
@@ -23,6 +25,7 @@ def read_incar(filename: Path) -> INCAR:
 
     data = {
         "potim": None,
+        "ml_outblock": 1,
     }
 
     with open(filename, "r") as f:
@@ -33,6 +36,7 @@ def read_incar(filename: Path) -> INCAR:
 
     return INCAR(
         potim=data["potim"],
+        ml_outblock=data["ml_outblock"]
     )
 
 def _validate_data(data: dict) -> None:
