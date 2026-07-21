@@ -7,8 +7,7 @@ from ..model.md_profile import MDProfile
 def plot_temperature_validation(
     profiles,
     target_temperatures,
-    outfile="temperature_validation.png",
-):
+) -> tuple:
     """
     Plot average temperature against target temperature.
 
@@ -35,7 +34,10 @@ def plot_temperature_validation(
     stds = np.asarray(stds)
     target = np.asarray(target_temperatures)
 
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(
+        figsize=(6, 6),
+        constrained_layout=True,
+    )
 
     ax.errorbar(
         target,
@@ -45,7 +47,7 @@ def plot_temperature_validation(
         color="tab:blue",
         markersize=6,
         capsize=4,
-        label="QTB",
+        label="MD",
     )
 
     xmax = target.max() * 1.05
@@ -67,7 +69,4 @@ def plot_temperature_validation(
 
     ax.legend()
 
-    fig.tight_layout()
-    fig.savefig(outfile, dpi=300)
-
-    return fig
+    return fig, ax
