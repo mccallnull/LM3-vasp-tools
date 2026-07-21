@@ -8,8 +8,9 @@ Geleral analysis tools for VASP molecular dynamics simulations.
 - [X] Reading OUTCAR file (General case)
 - [X] Reading INCAR file (Only POTIM tag!!)
 - [X] Reading REPORT file (Special case: pure HO)
-- [X] Statistical analysis
+- [X] Statistical analysis (Ensenble data)
 - [X] Time profile & histogram plotting
+- [X] Profile convergence check: running average & moving average
 - [X] Geometry calculation: now, just for lattice parameters!
 - [ ] else??
 
