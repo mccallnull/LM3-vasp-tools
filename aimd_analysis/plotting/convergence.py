@@ -1,42 +1,46 @@
-from aimd_analysis.analysis.convergence import (
-    running_average,
+from typing import Optional
+
+import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
+
+from ..analysis.convergence import (
     moving_average,
+    running_average,
 )
+from ..model.md_profile import MDProfile
 from . import style
 
 
-def plot_running_average(
-    ax,
-    profile,
-    quantity,
-    *,
-    moving_window=None,
-    label=None,
-    color=None,
-    linewidth=2,
-):
+def add_running_average(
+    ax: Axes,
+    profile: MDProfile,
+    quantity: str,
+    moving_window: Optional[int] = None,
+    label: Optional[str] = None,
+    color: Optional[str] = None,
+    linewidth: float = 2.0,
+    show_mean: bool = True,
+) -> None:
     """
-    Plot running average.
+    Plot running average (and optional moving average)
+    for a selected MD quantity.
 
     Parameters
     ----------
     ax
-        Matplotlib axes.
-
+        Target matplotlib axes.
     profile
-        MD profile.
-
+        MD profile object.
     quantity
-        Quantity name.
-
+        Quantity to plot.
+    moving_window
+        Window size for moving average.
     label
         Legend label.
-
     color
         Line color.
-
     linewidth
-        Line width.
+        Base line width.
     """
 
     time, running = running_average(
@@ -67,20 +71,16 @@ def plot_running_average(
             moving,
             label=None,
             color=color,
-            linewidth=0.8 * linewidth,
-            linestyle="--",
-            alpha=0.9,
+            linewidth=style.MOVING_LINEWIDTH_SCALE * linewidth,
+            linestyle=style.MOVING_LINESTYLE,
+            alpha=style.MOVING_ALPHA,
         )
 
-    ax.axhline(
-        running[-1],
-        color=style.MEAN_LINECOLOR,
-        linestyle=style.MEAN_LINESTYLE,
-        linewidth=style.MEAN_LINEWIDTH,
-        alpha=style.MEAN_LINEALPHA,
-    )
-
-    ax.set_xlabel("Elapsed Time (fs)")
-    ax.set_ylabel(f"Running Average\n{style.LABELS[quantity]}")
-
-    return ax
+    if show_mean:
+        ax.axhline(
+            profile.stats[quantity].mean,
+            color=style.MEAN_LINECOLOR,
+            linestyle=style.MEAN_LINESTYLE,
+            linewidth=style.MEAN_LINEWIDTH,
+            alpha=style.MEAN_LINEALPHA,
+        )

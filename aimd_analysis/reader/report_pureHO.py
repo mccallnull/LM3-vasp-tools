@@ -3,11 +3,12 @@
 
 from pathlib import Path
 import numpy as np
+from typing import Dict, List
 
 from ..model.md_profile import MDProfile
 
 
-def _parse_report_line_pureHO(line: str, data: dict) -> None:
+def _parse_report_line_pureHO(line: str, data: Dict[str, List[float]]) -> None:
     """Parse a single line of VASP REPORT."""
 
     line = line.replace(">", "")
@@ -62,7 +63,7 @@ def read_report_pureHO(filename: Path, verbose: bool = False) -> MDProfile:
         T_md=temp,
     )
 
-def _validate_data(data: dict) -> None:
+def _validate_data(data: Dict[str, List[float]]) -> None:
 
     n = len(data["Epot"])
 
@@ -73,7 +74,7 @@ def _validate_data(data: dict) -> None:
         raise ValueError("Different data length!!")
 
 
-def _print_loaded_data(data: dict) -> None:
+def _print_loaded_data(data: Dict[str, List[float]]) -> None:
 
     for key, value in data.items():
         print(f"{key:6s}: {len(value)}")

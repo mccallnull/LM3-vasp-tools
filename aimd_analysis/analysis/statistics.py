@@ -95,7 +95,10 @@ def summary(profile: MDProfile, verbose: bool = False) -> None:
     print("=" * 50)
 
 
-def _print_statistics(title: str, stats: QuantityStatistics) -> None:
+def _print_statistics(
+    title: str,
+    stats: Optional[QuantityStatistics]
+) -> None:
 
     if stats is None:
         print(f"{title}")
@@ -143,7 +146,7 @@ def slice_profile(
 def _slice_optional(
     arr: Optional[np.ndarray],
     start: int,
-    stop: int,
+    stop: Optional[int],
 ) -> Optional[np.ndarray]:
 
     if arr is None:

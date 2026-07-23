@@ -3,9 +3,8 @@ Trajectory convergence analysis.
 Provides running statistics and convergence diagnostics.
 """
 
-from __future__ import annotations
-
 import numpy as np
+from typing import Tuple
 
 from aimd_analysis.model.md_profile import MDProfile
 
@@ -26,7 +25,7 @@ def _get_quantity(
 def running_average(
     profile: MDProfile,
     quantity: str,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate running average of a trajectory quantity.
 
@@ -55,7 +54,7 @@ def moving_average(
     profile: MDProfile,
     quantity: str,
     window: int,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Compute the centered moving average of a trajectory quantity.
 

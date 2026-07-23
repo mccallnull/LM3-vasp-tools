@@ -3,11 +3,12 @@
 
 from pathlib import Path
 import numpy as np
+from typing import Any, Dict
 
 from ..model.md_profile import MDProfile
 
 
-def _parse_outcar_line(line: str, data: dict) -> None:
+def _parse_outcar_line(line: str, data: Dict[str, Any]) -> None:
     """Parse a single line of VASP OUTCAR."""
 
     line = line.replace("=", " = ")
@@ -118,7 +119,7 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
         lat_vecs=lat_vecs
     )
 
-def _validate_data(data: dict) -> None:
+def _validate_data(data: Dict[str, Any]) -> None:
 
     n = len(data["Epot"])
 
@@ -140,7 +141,7 @@ def _validate_data(data: dict) -> None:
             raise ValueError("Different data length!!")
 
 
-def _print_loaded_data(data: dict) -> None:
+def _print_loaded_data(data: Dict[str, Any]) -> None:
 
     for key, value in data.items():
         if isinstance(value, list):

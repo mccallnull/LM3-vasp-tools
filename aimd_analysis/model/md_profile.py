@@ -18,11 +18,11 @@ class MDProfile:
     operation: Optional[str] = field(default=None)
 
     # NVT에서 기본적으로 추출할 것들.
-    Epot: np.ndarray = field(default=None)
-    Ekin: np.ndarray = field(default=None)
-    Etot: np.ndarray = field(default=None)
-    T_md: np.ndarray = field(default=None)
-    P_md: np.ndarray = field(default=None)
+    Epot: Optional[np.ndarray] = field(default=None)
+    Ekin: Optional[np.ndarray] = field(default=None)
+    Etot: Optional[np.ndarray] = field(default=None)
+    T_md: Optional[np.ndarray] = field(default=None)
+    P_md: Optional[np.ndarray] = field(default=None)
 
     # NPT라면, 이것들도 추가로 추출할 것.
     V_md: Optional[np.ndarray] = field(default=None)
@@ -48,7 +48,7 @@ class MDProfile:
     dt: Optional[float] = field(default=None)
 
     # Statistical data of time sequences (computed in statistics.py)
-    stats: Dict[str, Optional[QuantityStatistics]] = field(
+    stats: Dict[str, QuantityStatistics] = field(
         default_factory=dict
     )
 
@@ -64,7 +64,7 @@ class MDProfile:
         return 0
 
     @property
-    def indices(self) -> np.ndarray:
+    def indices(self) -> Optional[np.ndarray]:
         if self.nsteps == 0:
             return None
         return np.arange(self.nsteps)
@@ -77,38 +77,38 @@ class MDProfile:
 
     @property
     def time(self) -> Optional[np.ndarray]:
-        if self.dt is None:
+        if self.dt is None or self.nsteps == 0:
             return None
         # In VASP Ionic step 1 is assigned to t = 0
         return (self.step - 1) * self.dt
 
     @property
     def start_time(self) -> Optional[float]:
-        if self.dt is None:
+        if self.dt is None or self.nsteps == 0:
             return None
         return self.time[0]
 
     @property
     def end_time(self) -> Optional[float]:
-        if self.dt is None:
+        if self.dt is None or self.nsteps == 0:
             return None
         return self.time[-1]
 
     @property
     def duration(self) -> Optional[float]:
-        if self.dt is None:
+        if self.dt is None or self.nsteps == 0:
             return None
         return self.end_time - self.start_time
 
     @property
     def elapsed_time(self) -> Optional[np.ndarray]:
-        if self.dt is None:
+        if self.dt is None or self.nsteps == 0:
             return None
         return self.time - self.time[0]
 
     @property
     def parent_time(self) -> Optional[np.ndarray]:
-        if self.parent is None or self.dt is None:
+        if self.parent is None or self.dt is None or self.nsteps == 0:
             return None
 
         return self.time - self.parent.start_time

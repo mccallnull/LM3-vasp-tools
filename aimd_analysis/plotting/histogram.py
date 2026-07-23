@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
-from typing import Dict, Optional, Any
+from matplotlib.figure import Figure
+from matplotlib.axes import Axes
+from typing import Dict, Optional, Any, Tuple
 
 from ..model.md_profile import MDProfile
 from . import style
@@ -11,25 +13,25 @@ def plot_histogram(
     quantity: str,
 
     # Figure
-    ax=None,
-    figsize=style.DEFAULT_FIGSIZE,
+    ax: Optional[Axes] = None,
+    figsize: Tuple[float, float] = style.DEFAULT_FIGSIZE,
 
     # Histogram
     bins: int = 30,
     density: bool = False,
 
     # Style
-    color=None,
-    alpha=style.DEFAULT_ALPHA,
-    label=None,
+    color: Optional[str] = None,
+    alpha: float = style.DEFAULT_ALPHA,
+    label: Optional[str] = None,
 
     # Axis
     grid: bool = True,
-    xlim=None,
-    ylim=None,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
 
     # Is inset?
-    inset: bool  =False,
+    inset: bool =False,
 
     # Include statistics?
     show_statistics: bool = False,
@@ -37,7 +39,7 @@ def plot_histogram(
     # Details for style
     mean_kwargs: Optional[Dict[str, Any]] = None,
     textbox_kwargs: Optional[Dict[str, Any]] = None,
-) -> tuple:
+) -> Tuple[Figure, Axes]:
 
     if not profile.stats:
         raise RuntimeError(

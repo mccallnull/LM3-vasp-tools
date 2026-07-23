@@ -1,13 +1,16 @@
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 import numpy as np
+from typing import Tuple, List
 
 from ..model.md_profile import MDProfile
 
 
 def plot_temperature_validation(
-    profiles,
-    target_temperatures,
-) -> tuple:
+    profiles: List[MDProfile],
+    target_temperatures: List[float],
+) -> Tuple[Figure, Axes]:
     """
     Plot average temperature against target temperature.
 
@@ -22,7 +25,7 @@ def plot_temperature_validation(
 
     for profile in profiles:
 
-        if not profile.stats:
+        if "T_md" not in profile.stats:
             raise RuntimeError(
                 "Statistics have not been computed."
             )

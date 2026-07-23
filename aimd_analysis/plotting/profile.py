@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, Tuple
 
 from ..model.md_profile import MDProfile
 from . import style
@@ -13,20 +15,20 @@ def plot_profile(
     quantity: str,
 
     # Figure
-    ax=None,
-    figsize=style.DEFAULT_FIGSIZE,
+    ax: Optional[Axes] = None,
+    figsize: Tuple[float, float] = style.DEFAULT_FIGSIZE,
 
     # Line style
-    color=None,
-    linewidth=style.DEFAULT_LINEWIDTH,
-    linestyle=style.DEFAULT_LINESTYLE,
-    alpha=style.DEFAULT_ALPHA,
-    label=None,
+    color: Optional[str] = None,
+    linewidth: float = style.DEFAULT_LINEWIDTH,
+    linestyle: str = style.DEFAULT_LINESTYLE,
+    alpha: float = style.DEFAULT_ALPHA,
+    label: Optional[str] = None,
 
     # Axis
     grid: bool = True,
-    xlim=None,
-    ylim=None,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
 
     # Include histogram?
     inset: bool = False,
@@ -40,7 +42,7 @@ def plot_profile(
     # Details for style
     mean_kwargs: Optional[Dict[str, Any]] = None,
     textbox_kwargs: Optional[Dict[str, Any]] = None,
-) -> tuple:
+) -> Tuple[Figure, Axes]:
 
     if not profile.stats:
         raise RuntimeError(
