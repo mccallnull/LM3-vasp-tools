@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 import numpy as np
-from typing import Tuple, List
+from typing import Tuple, List, Sequence, Optional
 
 from ..model.md_profile import MDProfile
+from . import style
 
 
-def plot_temperature_validation(
+def plot_temperature_dependence(
     profiles: List[MDProfile],
     target_temperatures: List[float],
+    quantity: str
 ) -> Tuple[Figure, Axes]:
     """
     Plot average temperature against target temperature.
@@ -18,20 +20,21 @@ def plot_temperature_validation(
     ----------
     profiles : list[MDProfile]
     target_temperatures : list[float]
+    quantity : str
     """
 
-    means = []
-    stds = []
+    means: List[float] = []
+    stds: List[float] = []
 
     for profile in profiles:
 
-        if "T_md" not in profile.stats:
+        if quantity not in profile.stats:
             raise RuntimeError(
                 "Statistics have not been computed."
             )
 
-        means.append(profile.stats["T_md"].mean)
-        stds.append(profile.stats["T_md"].std)
+        means.append(profile.stats[quantity].mean)
+        stds.append(profile.stats[quantity].std)
 
     means = np.asarray(means)
     stds = np.asarray(stds)
@@ -55,21 +58,31 @@ def plot_temperature_validation(
 
     xmax = target.max() * 1.05
 
-    ax.plot(
-        [0, xmax],
-        [0, xmax],
-        "--",
-        color="gray",
-        linewidth=1.5,
-        label="Ideal",
-    )
-
     ax.set_xlim(0, xmax)
     ax.set_ylim(0, xmax)
 
     ax.set_xlabel("Target temperature (K)")
-    ax.set_ylabel("Average temperature (K)")
+    ax.set_ylabel(f"Average of {style.LABELS[quantity]}")
 
     ax.legend()
 
     return fig, ax
+
+def add_temperature_reference(
+    ax: Axes,
+    x: Sequence[float],
+    y: Sequence[float],
+    linestyle: str = "--",
+    color: str = "gray",
+    linewidth: float = 1.5,
+    label: Optional[str] = None,
+) -> None:
+
+    ax.plot(
+        x,
+        y,
+        linestyle=linestyle,
+        color=color,
+        linewidth=linewidth,
+        label=label,
+    )

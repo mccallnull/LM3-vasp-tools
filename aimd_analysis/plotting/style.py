@@ -3,6 +3,8 @@ LABELS = {
     "Ekin": "Kinetic Energy (eV)",
     "Etot": "Total Energy (eV)",
     "T_md": "Temperature (K)",
+    "P_md": "Pressure (kBar)",
+    "V_md": "Volume (Ang^3)",
 }
 
 DEFAULT_FIGSIZE = (6, 4)
