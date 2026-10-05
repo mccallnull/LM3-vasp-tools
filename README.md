@@ -8,3 +8,5 @@ _Laboratory of Molecules/Materials Modelling (LM3)_
 ## Modules
 
 - [ ] [AIMD Analysis](aimd-analysis/)
+- [ ] [QHA Analysis](qha_analysis/)
+- [ ] [Static Analysis](static_analysis/)
