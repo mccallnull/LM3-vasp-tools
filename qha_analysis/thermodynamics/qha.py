@@ -6,8 +6,10 @@ from ..model.qha_model import QHAModel
 from .vibrational import (
     vibrational_internal_energy,
     vibrational_free_energy,
+    classical_vibrational_free_energy,
     internal_energy,
     free_energy,
+    classical_free_energy,
 )
 
 
@@ -41,6 +43,21 @@ def vibrational_free_energies(
     ])
 
 
+def classical_vibrational_free_energies(
+    model: QHAModel,
+    temperature: float,
+    zero_threshold: float = 0.01,
+) -> np.ndarray:
+    return np.asarray([
+        classical_vibrational_free_energy(
+            point,
+            temperature,
+            zero_threshold,
+        )
+        for point in model.points
+    ])
+
+
 def internal_energies(
     model: QHAModel,
     temperature: float,
@@ -63,6 +80,20 @@ def free_energies(
 ) -> np.ndarray:
     return np.asarray([
         free_energy(
+            point,
+            temperature,
+            zero_threshold,
+        )
+        for point in model.points
+    ])
+
+def classical_free_energies(
+    model: QHAModel,
+    temperature: float,
+    zero_threshold: float = 0.01,
+) -> np.ndarray:
+    return np.asarray([
+        classical_free_energy(
             point,
             temperature,
             zero_threshold,

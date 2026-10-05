@@ -79,6 +79,21 @@ def vibrational_free_energy(
         + kBT * np.log(-np.expm1(-eps / kBT))
     )
 
+def classical_vibrational_free_energy(
+    point: QHAPoint,
+    temperature: float,
+    zero_threshold: float = 0.01,
+) -> float:
+
+    if temperature == 0.0:
+        return 0.0
+
+    eps = _active_phonon_energies(point, zero_threshold)
+    eps = eps * 1.0e-3  # meV -> eV
+
+    kBT = KB_EV_K * temperature
+
+    return kBT * np.sum(np.log(eps / kBT))
 
 def _active_phonon_energies(
     point: QHAPoint,
@@ -141,6 +156,26 @@ def free_energy(
     return (
         point.static_energy
         + vibrational_free_energy(
+            point,
+            temperature,
+            zero_threshold,
+        )
+    )
+
+def classical_free_energy(
+    point: QHAPoint,
+    temperature: float,
+    zero_threshold: float = 0.01,
+) -> float:
+    """
+    Total Helmholtz free energy:
+
+        F(T,V) = E_static(V) + F_vib(T,V)
+    """
+
+    return (
+        point.static_energy
+        + classical_vibrational_free_energy(
             point,
             temperature,
             zero_threshold,
