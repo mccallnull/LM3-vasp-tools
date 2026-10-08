@@ -1,5 +1,4 @@
 # VASP 결과 중 OUTCAR 파일을 읽어줌
-# 현재는 NVT 전용 (이후 NPT까지 커버하도록 확장.)
 
 from pathlib import Path
 import numpy as np
@@ -16,7 +15,7 @@ def _parse_outcar_line(line: str, data: Dict[str, Any]) -> None:
 
     if not fields:
         return
-    #여기서부터가 핵심적으로 바꿔야 할 부분(수정됨.)
+    #여기서부터가 parsing routes
     if len(fields) >= 3 and fields[0] == "POTIM":
         data["dt"] = float(fields[2])
 
@@ -83,6 +82,32 @@ def read_outcar(filename: Path, verbose: bool = False) -> MDProfile:
 
     with open(filename, "r") as f:
         for line in f:
+
+            if data["_reading_lattice"]:
+                pass
+
+            elif "POTIM" in line:
+                pass
+
+            elif "ISIF" in line:
+                pass
+
+            elif "Ionic step" in line:
+                pass
+
+            elif data["_in_ionic_steps"]:
+                if (
+                    "ion-electron" not in line
+                    and "EKIN" not in line
+                    and "total pressure" not in line
+                    and "volume of cell" not in line
+                    and "direct lattice vectors" not in line
+                ):
+                    continue
+
+            else:
+                continue
+
             _parse_outcar_line(line, data)
 
     if verbose:
